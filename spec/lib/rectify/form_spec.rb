@@ -46,6 +46,21 @@ RSpec.describe Rectify::Form do
     end
   end
 
+  describe ".from_model" do
+    let(:model) do
+      User.new(:first_name => "Andy", :age => 38)
+    end
+
+    it "populates attributes from an ActiveModel" do
+      form = UserForm.from_model(model)
+
+      expect(form).to have_attributes(
+        :first_name => "Andy",
+        :age => 38
+      )
+    end
+  end
+
   describe ".model_name" do
     it "allows a form to mimic a model" do
       expect(UserForm.model_name.name).to eq("User")

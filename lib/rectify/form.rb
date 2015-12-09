@@ -13,6 +13,10 @@ module Rectify
       end
     end
 
+    def self.from_model(model)
+      new(model.attributes)
+    end
+
     def self.route_as(model_name)
       @model_name = model_name.to_s.camelize
     end
