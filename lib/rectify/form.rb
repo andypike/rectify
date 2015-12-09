@@ -5,10 +5,11 @@ module Rectify
     attribute :id, Integer
 
     def self.from_params(key, params)
-      params = params.with_indifferent_access
+      params     = params.with_indifferent_access
+      attributes = params.fetch(key, {})
 
-      new(params.fetch(key)).tap do |form|
-        form.id = params[:id]
+      new(attributes).tap do |f|
+        f.id = params[:id]
       end
     end
   end
