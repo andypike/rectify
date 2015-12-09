@@ -45,4 +45,44 @@ RSpec.describe Rectify::Form do
       expect(form.id).to eq(1)
     end
   end
+
+  describe ".model_name" do
+    it "allows a form to mimic a model" do
+      expect(UserForm.model_name.name).to eq("User")
+    end
+  end
+
+  describe "#persisted?" do
+    context "when the form id is a number greater than zero" do
+      it "returns true" do
+        form = UserForm.new(:id => 1)
+
+        expect(form).to be_persisted
+      end
+    end
+
+    context "when the form id is zero" do
+      it "returns false" do
+        form = UserForm.new(:id => 0)
+
+        expect(form).not_to be_persisted
+      end
+    end
+
+    context "when the form id is less than zero" do
+      it "returns false" do
+        form = UserForm.new(:id => -1)
+
+        expect(form).not_to be_persisted
+      end
+    end
+
+    context "when the form id is blank" do
+      it "returns false" do
+        form = UserForm.new(:id => nil)
+
+        expect(form).not_to be_persisted
+      end
+    end
+  end
 end

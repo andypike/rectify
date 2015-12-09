@@ -12,5 +12,17 @@ module Rectify
         f.id = params[:id]
       end
     end
+
+    def self.route_as(model_name)
+      @model_name = model_name.to_s.camelize
+    end
+
+    def self.model_name
+      ActiveModel::Name.new(self, nil, @model_name)
+    end
+
+    def persisted?
+      id.present? && id.to_i > 0
+    end
   end
 end

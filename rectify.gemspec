@@ -13,8 +13,9 @@ Gem::Specification.new do |s|
   s.license       = "MIT"
   s.require_paths = ["lib"]
 
-  s.add_dependency "virtus", "~> 1.0.5"
+  s.add_dependency "virtus",        "~> 1.0.5"
   s.add_dependency "activesupport", "~> 4.2.0"
+  s.add_dependency "activemodel",   "~> 4.2.0"
 
   s.add_development_dependency "rspec",         "~> 3.4"
   s.add_development_dependency "awesome_print", "~> 1.6"
