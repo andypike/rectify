@@ -100,4 +100,22 @@ RSpec.describe Rectify::Form do
       end
     end
   end
+
+  context "when being used with a form builder" do
+    describe "#to_key" do
+      it "returns an array containing the id" do
+        form = UserForm.new(:id => 2)
+
+        expect(form.to_key).to eq([2])
+      end
+    end
+
+    describe "#to_model" do
+      it "returns the form object (self)" do
+        form = UserForm.new
+
+        expect(form.to_model).to eq(form)
+      end
+    end
+  end
 end

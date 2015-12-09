@@ -28,5 +28,13 @@ module Rectify
     def persisted?
       id.present? && id.to_i > 0
     end
+
+    def to_key
+      [id]
+    end
+
+    def to_model
+      self
+    end
   end
 end
