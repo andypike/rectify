@@ -2,11 +2,18 @@ PATH
   remote: .
   specs:
     rectify (0.0.1)
+      activesupport (~> 4.2.0)
       virtus (~> 1.0.5)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (4.2.5)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
     awesome_print (1.6.1)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -19,8 +26,11 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
     equalizer (0.0.11)
+    i18n (0.7.0)
     ice_nine (0.11.1)
+    json (1.8.3)
     method_source (0.8.2)
+    minitest (5.8.2)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -40,6 +50,8 @@ GEM
     rspec-support (3.4.1)
     slop (3.6.0)
     thread_safe (0.3.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
