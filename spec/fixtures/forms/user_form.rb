@@ -3,4 +3,6 @@ class UserForm < Rectify::Form
 
   attribute :first_name, String
   attribute :age,        Integer
+  attribute :colours,    Array
+  attribute :address,    AddressForm
 end

@@ -25,7 +25,14 @@ RSpec.describe Rectify::Form do
         "id" => "1",
         "user" => {
           "first_name" => "Andy",
-          "age" => "38"
+          "age"        => "38",
+          "colours"    => %w(red blue green),
+          "address" => {
+            "street"    => "1 High Street",
+            "town"      => "Wimbledon",
+            "city"      => "London",
+            "post_code" => "SW19 1AB"
+          }
         }
       }
     end
@@ -35,7 +42,8 @@ RSpec.describe Rectify::Form do
 
       expect(form).to have_attributes(
         :first_name => "Andy",
-        :age => 38
+        :age        => 38,
+        :colours    => %w(red blue green)
       )
     end
 
@@ -43,6 +51,17 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(:user, params)
 
       expect(form.id).to eq(1)
+    end
+
+    it "populates nested object attributes" do
+      form = UserForm.from_params(:user, params)
+
+      expect(form.address).to have_attributes(
+        :street    => "1 High Street",
+        :town      => "Wimbledon",
+        :city      => "London",
+        :post_code => "SW19 1AB"
+      )
     end
   end
 
