@@ -1,5 +1,4 @@
-class Rectify
-  def self.hi
-    puts "Hello world!"
-  end
-end
+require "virtus"
+
+require "rectify/version"
+require "rectify/form"
