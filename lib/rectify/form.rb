@@ -4,9 +4,9 @@ module Rectify
 
     attribute :id, Integer
 
-    def self.from_params(key, params)
+    def self.from_params(key, params, additional_params = {})
       params     = params.with_indifferent_access
-      attributes = params.fetch(key, {})
+      attributes = params.fetch(key, {}).merge(additional_params)
 
       new(attributes).tap do |f|
         f.id = params[:id]

@@ -92,6 +92,20 @@ RSpec.describe Rectify::Form do
         :school     => "Rutlish"
       )
     end
+
+    it "populates attributes from additional context data" do
+      form = UserForm.from_params(:user, params, :order_count => 10)
+
+      expect(form.order_count).to eq(10)
+    end
+
+    it "doesn't create attributes for param data not defined in the form" do
+      params["user"]["some_extra_data"] = "Some text"
+
+      form = UserForm.from_params(:user, params)
+
+      expect { form.some_extra_data }.to raise_error(NoMethodError)
+    end
   end
 
   describe ".from_model" do
