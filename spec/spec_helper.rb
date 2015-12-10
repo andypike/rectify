@@ -1,5 +1,9 @@
 require File.expand_path("../../lib/rectify", __FILE__)
 
+require "rspec/collection_matchers"
+require "awesome_print"
+require "pry"
+
 Dir["spec/support/**/*.rb"].each { |f| require File.expand_path(f) }
 Dir["spec/fixtures/**/*.rb"].each { |f| require File.expand_path(f) }
 

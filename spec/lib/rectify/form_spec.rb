@@ -32,7 +32,12 @@ RSpec.describe Rectify::Form do
             "town"      => "Wimbledon",
             "city"      => "London",
             "post_code" => "SW19 1AB"
-          }
+          },
+          "contacts" => [
+            { "name" => "Amber",   "number" => "123" },
+            { "name" => "Megan",   "number" => "456" },
+            { "name" => "Charlie", "number" => "789" }
+          ]
         }
       }
     end
@@ -61,6 +66,30 @@ RSpec.describe Rectify::Form do
         :town      => "Wimbledon",
         :city      => "London",
         :post_code => "SW19 1AB"
+      )
+    end
+
+    it "populates array attributes of objects" do
+      form = UserForm.from_params(:user, params)
+
+      expect(form.contacts).to have(3).items
+      expect(form.contacts[0].name).to eq("Amber")
+      expect(form.contacts[0].number).to eq("123")
+      expect(form.contacts[1].name).to eq("Megan")
+      expect(form.contacts[1].number).to eq("456")
+      expect(form.contacts[2].name).to eq("Charlie")
+      expect(form.contacts[2].number).to eq("789")
+    end
+
+    it "populates a derived form" do
+      params["user"]["school"] = "Rutlish"
+
+      form = ChildForm.from_params(:user, params)
+
+      expect(form).to have_attributes(
+        :first_name => "Andy",
+        :age        => 38,
+        :school     => "Rutlish"
       )
     end
   end

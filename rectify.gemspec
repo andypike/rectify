@@ -17,7 +17,8 @@ Gem::Specification.new do |s|
   s.add_dependency "activesupport", "~> 4.2.0"
   s.add_dependency "activemodel",   "~> 4.2.0"
 
-  s.add_development_dependency "rspec",         "~> 3.4"
   s.add_development_dependency "awesome_print", "~> 1.6"
   s.add_development_dependency "pry",           "~> 0.10.3"
+  s.add_development_dependency "rspec",         "~> 3.4"
+  s.add_development_dependency "rspec-collection_matchers", "~> 1.1.2"
 end

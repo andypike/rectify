@@ -44,6 +44,8 @@ GEM
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
       rspec-mocks (~> 3.4.0)
+    rspec-collection_matchers (1.1.2)
+      rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.4.1)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -71,6 +73,7 @@ DEPENDENCIES
   pry (~> 0.10.3)
   rectify!
   rspec (~> 3.4)
+  rspec-collection_matchers (~> 1.1.2)
 
 BUNDLED WITH
    1.10.6
