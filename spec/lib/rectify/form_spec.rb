@@ -118,6 +118,10 @@ RSpec.describe Rectify::Form do
         expect(OrderForm.model_name.name).to eq("Order")
       end
 
+      it "uses the class name of the form minus the `Form` suffix and namespace as the model name" do
+        expect(Inventory::ProductForm.model_name.name).to eq("Product")
+      end
+
       it "uses the class name of the form minus the `Form` suffix as the params key" do
         order_params = {
           "order" => {

@@ -22,7 +22,7 @@ module Rectify
     end
 
     def self.mimicked_model_name
-      @model_name || name.chomp("Form").underscore.to_sym
+      @model_name || name.split("::").last.chomp("Form").underscore.to_sym
     end
 
     def self.model_name
