@@ -191,6 +191,14 @@ RSpec.describe Rectify::Form do
     end
   end
 
+  describe "#attributes" do
+    it "returns a hash of attributes with their values excluding :id" do
+      form = OrderForm.new(:number => "12345", :id => 1)
+
+      expect(form.attributes).to eq(:number => "12345")
+    end
+  end
+
   context "when being used with a form builder" do
     describe "#to_key" do
       it "returns an array containing the id" do

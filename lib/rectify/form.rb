@@ -40,5 +40,9 @@ module Rectify
     def to_model
       self
     end
+
+    def attributes
+      super.except(:id)
+    end
   end
 end
