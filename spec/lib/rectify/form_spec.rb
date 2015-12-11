@@ -43,7 +43,7 @@ RSpec.describe Rectify::Form do
     end
 
     it "populates attributes from a params hash" do
-      form = UserForm.from_params(:user, params)
+      form = UserForm.from_params(params)
 
       expect(form).to have_attributes(
         :first_name => "Andy",
@@ -53,13 +53,13 @@ RSpec.describe Rectify::Form do
     end
 
     it "populates the id from a params hash" do
-      form = UserForm.from_params(:user, params)
+      form = UserForm.from_params(params)
 
       expect(form.id).to eq(1)
     end
 
     it "populates nested object attributes" do
-      form = UserForm.from_params(:user, params)
+      form = UserForm.from_params(params)
 
       expect(form.address).to have_attributes(
         :street    => "1 High Street",
@@ -70,7 +70,7 @@ RSpec.describe Rectify::Form do
     end
 
     it "populates array attributes of objects" do
-      form = UserForm.from_params(:user, params)
+      form = UserForm.from_params(params)
 
       expect(form.contacts).to have(3).items
       expect(form.contacts[0].name).to eq("Amber")
@@ -84,7 +84,7 @@ RSpec.describe Rectify::Form do
     it "populates a derived form" do
       params["user"]["school"] = "Rutlish"
 
-      form = ChildForm.from_params(:user, params)
+      form = ChildForm.from_params(params)
 
       expect(form).to have_attributes(
         :first_name => "Andy",
@@ -94,7 +94,7 @@ RSpec.describe Rectify::Form do
     end
 
     it "populates attributes from additional context data" do
-      form = UserForm.from_params(:user, params, :order_count => 10)
+      form = UserForm.from_params(params, :order_count => 10)
 
       expect(form.order_count).to eq(10)
     end
@@ -102,9 +102,33 @@ RSpec.describe Rectify::Form do
     it "doesn't create attributes for param data not defined in the form" do
       params["user"]["some_extra_data"] = "Some text"
 
-      form = UserForm.from_params(:user, params)
+      form = UserForm.from_params(params)
 
       expect { form.some_extra_data }.to raise_error(NoMethodError)
+    end
+
+    context "when a model is explicitally mimicked" do
+      it "returns the matching model name" do
+        expect(ChildForm.model_name.name).to eq("User")
+      end
+    end
+
+    context "when a model is not explicitally mimicked" do
+      it "uses the class name of the form minus the `Form` suffix as the model name" do
+        expect(OrderForm.model_name.name).to eq("Order")
+      end
+
+      it "uses the class name of the form minus the `Form` suffix as the params key" do
+        order_params = {
+          "order" => {
+            "number" => "12345"
+          }
+        }
+
+        form = OrderForm.from_params(order_params)
+
+        expect(form.number).to eq("12345")
+      end
     end
   end
 

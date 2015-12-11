@@ -4,9 +4,9 @@ module Rectify
 
     attribute :id, Integer
 
-    def self.from_params(key, params, additional_params = {})
+    def self.from_params(params, additional_params = {})
       params     = params.with_indifferent_access
-      attributes = params.fetch(key, {}).merge(additional_params)
+      attributes = params.fetch(mimicked_model_name, {}).merge(additional_params)
 
       new(attributes).tap do |f|
         f.id = params[:id]
@@ -17,12 +17,16 @@ module Rectify
       new(model.attributes)
     end
 
-    def self.route_as(model_name)
-      @model_name = model_name.to_s.camelize
+    def self.mimic(model_name)
+      @model_name = model_name.to_s.underscore.to_sym
+    end
+
+    def self.mimicked_model_name
+      @model_name || name.chomp("Form").underscore.to_sym
     end
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, @model_name)
+      ActiveModel::Name.new(self, nil, mimicked_model_name.to_s.camelize)
     end
 
     def persisted?

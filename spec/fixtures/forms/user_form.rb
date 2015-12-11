@@ -2,7 +2,7 @@ require_relative "address_form"
 require_relative "contact_form"
 
 class UserForm < Rectify::Form
-  route_as :user
+  mimic :user
 
   attribute :first_name,  String
   attribute :age,         Integer
