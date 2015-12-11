@@ -41,6 +41,28 @@ module Rectify
       id.present? && id.to_i > 0
     end
 
+    def valid?
+      [super, form_attributes_valid?, arrays_attributes_valid?].all?
+    end
+
+    def form_attributes_valid?
+      attributes
+        .each_value
+        .select { |f| f.respond_to?(:valid?) }
+        .map(&:valid?)
+        .all?
+    end
+
+    def arrays_attributes_valid?
+      attributes
+        .each_value
+        .select { |a| a.is_a?(Array) }
+        .flatten
+        .select { |f| f.respond_to?(:valid?) }
+        .map(&:valid?)
+        .all?
+    end
+
     def to_key
       [id]
     end

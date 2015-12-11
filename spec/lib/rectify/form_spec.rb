@@ -218,19 +218,61 @@ RSpec.describe Rectify::Form do
   end
 
   describe "#valid?" do
-    context "when the form has valid values" do
-      it "returns true" do
-        form = RegistrationForm.new(:email => "me@here.com")
+    describe "validating the form" do
+      context "when the form has valid values" do
+        it "returns true" do
+          form = RegistrationForm.new(:email => "me@here.com")
 
-        expect(form).to be_valid
+          expect(form).to be_valid
+        end
+      end
+
+      context "when the form has invalid values" do
+        it "returns false" do
+          form = RegistrationForm.new(:email => "")
+
+          expect(form).not_to be_valid
+        end
       end
     end
 
-    context "when the form has invalid values" do
-      it "returns false" do
-        form = RegistrationForm.new(:email => "")
+    describe "validating nested forms" do
+      context "when the nested forms have valid values" do
+        it "returns true" do
+          form = SchoolForm.new(:head => TeacherForm.new(:name => "me@here.com"))
 
-        expect(form).not_to be_valid
+          expect(form).to be_valid
+          expect(form.head).to be_valid
+        end
+      end
+
+      context "when the nested forms have invalid values" do
+        it "returns false" do
+          form = SchoolForm.new(:head => TeacherForm.new(:name => ""))
+
+          expect(form).not_to be_valid
+          expect(form.head).not_to be_valid
+        end
+      end
+    end
+
+    describe "validating array attributes containing forms" do
+      context "when the array of forms has valid values" do
+        it "returns true" do
+          form = UserForm.new(:contacts => [ContactForm.new(:name => "Andy")])
+
+          expect(form).to be_valid
+          expect(form.contacts.first).to be_valid
+        end
+      end
+
+      context "when the array of forms has invalid values" do
+        it "returns false" do
+          form = UserForm.new(:contacts => [ContactForm.new(:name => "")])
+
+          expect(form).not_to be_valid
+          expect(form.contacts.first).not_to be_valid
+        end
       end
     end
   end
