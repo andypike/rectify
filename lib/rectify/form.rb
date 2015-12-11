@@ -1,6 +1,7 @@
 module Rectify
   class Form
     include Virtus.model
+    include ActiveModel::Validations
 
     attribute :id, Integer
 
@@ -22,7 +23,14 @@ module Rectify
     end
 
     def self.mimicked_model_name
-      @model_name || name.split("::").last.chomp("Form").underscore.to_sym
+      @model_name || infer_model_name
+    end
+
+    def self.infer_model_name
+      class_name = name.split("::").last
+      return :form if class_name == "Form"
+
+      class_name.chomp("Form").underscore.to_sym
     end
 
     def self.model_name

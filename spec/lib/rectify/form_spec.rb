@@ -216,4 +216,22 @@ RSpec.describe Rectify::Form do
       end
     end
   end
+
+  describe "#valid?" do
+    context "when the form has valid values" do
+      it "returns true" do
+        form = RegistrationForm.new(:email => "me@here.com")
+
+        expect(form).to be_valid
+      end
+    end
+
+    context "when the form has invalid values" do
+      it "returns false" do
+        form = RegistrationForm.new(:email => "")
+
+        expect(form).not_to be_valid
+      end
+    end
+  end
 end
