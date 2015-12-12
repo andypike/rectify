@@ -1,10 +1,11 @@
 require File.expand_path("../../lib/rectify", __FILE__)
 
 require "rspec/collection_matchers"
+require "wisper/rspec/matchers"
 require "awesome_print"
 require "pry"
 
-Dir["spec/support/**/*.rb"].each { |f| require File.expand_path(f) }
+Dir["spec/support/**/*.rb"].each  { |f| require File.expand_path(f) }
 Dir["spec/fixtures/**/*.rb"].each { |f| require File.expand_path(f) }
 
 RSpec.configure do |config|
@@ -19,4 +20,6 @@ RSpec.configure do |config|
   config.disable_monkey_patching!
   config.backtrace_exclusion_patterns << /gems/
   config.order = "random"
+
+  config.include Wisper::RSpec::BroadcastMatcher
 end

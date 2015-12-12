@@ -45,6 +45,20 @@ module Rectify
       [super, form_attributes_valid?, arrays_attributes_valid?].all?
     end
 
+    def to_key
+      [id]
+    end
+
+    def to_model
+      self
+    end
+
+    def attributes
+      super.except(:id)
+    end
+
+    private
+
     def form_attributes_valid?
       attributes
         .each_value
@@ -61,18 +75,6 @@ module Rectify
         .select { |f| f.respond_to?(:valid?) }
         .map(&:valid?)
         .all?
-    end
-
-    def to_key
-      [id]
-    end
-
-    def to_model
-      self
-    end
-
-    def attributes
-      super.except(:id)
     end
   end
 end

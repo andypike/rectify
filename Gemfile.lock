@@ -72,6 +72,7 @@ GEM
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
     wisper (1.6.1)
+    wisper-rspec (0.0.2)
 
 PLATFORMS
   ruby
@@ -82,6 +83,7 @@ DEPENDENCIES
   rectify!
   rspec (~> 3.4)
   rspec-collection_matchers (~> 1.1.2)
+  wisper-rspec (~> 0.0.2)
 
 BUNDLED WITH
    1.10.6

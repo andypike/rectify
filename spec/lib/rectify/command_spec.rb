@@ -20,37 +20,53 @@ RSpec.describe Rectify::Command do
       end
     end
 
-    describe "#on" do
-      def success
-        @success = true
+    context "when a command raises an exception" do
+      def error
+        @error = true
       end
 
-      def failure
-        @failure = true
-      end
+      it "broadcasts :error with the exception" do
+        @error = false
 
-      it "calls methods on the caller" do
-        @success = false
-        @failure = false
-
-        SuccessCommand.call do
-          on(:success) { success }
-          on(:failure) { failure }
+        ErrorCommand.call do
+          on(:error) { error }
         end
 
-        expect(@success).to be(true)
-        expect(@failure).to be(false)
+        expect(@error).to be(true)
+      end
+    end
+  end
+
+  describe "#on" do
+    def success
+      @success = true
+    end
+
+    def failure
+      @failure = true
+    end
+
+    it "calls methods on the caller" do
+      @success = false
+      @failure = false
+
+      SuccessCommand.call do
+        on(:success) { success }
+        on(:failure) { failure }
       end
 
-      it "sets instance variables on the caller via expose" do
-        @success = false
+      expect(@success).to be(true)
+      expect(@failure).to be(false)
+    end
 
-        SuccessCommand.call do
-          on(:success) { expose(:success => true) }
-        end
+    it "sets instance variables on the caller via expose" do
+      @success = false
 
-        expect(@success).to be(true)
+      SuccessCommand.call do
+        on(:success) { expose(:success => true) }
       end
+
+      expect(@success).to be(true)
     end
   end
 end
