@@ -1,7 +1,7 @@
 # Rectify
 
 Rectify is a gem that provides some lightweight classes that will make it easier
-to build Rails applications in a more maintainable way. It's build on top of
+to build Rails applications in a more maintainable way. It's built on top of
 several other gems and adds improved APIs to make things easier.
 
 Rectify is an extraction from a number of projects that I've worked on and used
@@ -18,9 +18,5 @@ gem "rectify"
 Coming soon
 
 ## Commands
-
-Coming soon
-
-## Queries
 
 Coming soon
