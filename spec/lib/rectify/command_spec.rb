@@ -19,22 +19,6 @@ RSpec.describe Rectify::Command do
         ArgsCommand.call(:a, :b, :c)
       end
     end
-
-    context "when a command raises an exception" do
-      def error
-        @error = true
-      end
-
-      it "broadcasts :error with the exception" do
-        @error = false
-
-        ErrorCommand.call do
-          on(:error) { error }
-        end
-
-        expect(@error).to be(true)
-      end
-    end
   end
 
   describe "#on" do

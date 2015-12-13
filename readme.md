@@ -1,5 +1,7 @@
 # Rectify
 
+[![Code Climate](https://codeclimate.com/github/andypike/rectify/badges/gpa.svg)](https://codeclimate.com/github/andypike/rectify)
+
 Rectify is a gem that provides some lightweight classes that will make it easier
 to build Rails applications in a more maintainable way. It's built on top of
 several other gems and adds improved APIs to make things easier.
@@ -11,6 +13,12 @@ To install, add it to your `Gemfile`:
 
 ```
 gem "rectify"
+```
+
+Then use Bundler to install it:
+
+```
+bundle install
 ```
 
 ## Form Objects

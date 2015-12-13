@@ -6,9 +6,6 @@ module Rectify
       command = new(*args)
       command.evaluate(&block) if block_given?
       command.call
-
-      rescue => e
-        command.errored(e)
     end
 
     def evaluate(&block)
@@ -36,10 +33,6 @@ module Rectify
 
     def respond_to_missing?(method_name, include_private = false)
       @caller.respond_to?(method_name, include_private)
-    end
-
-    def errored(e)
-      broadcast(:error, e)
     end
   end
 end
