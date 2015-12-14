@@ -1,5 +1,5 @@
 RSpec.describe Rectify::SaveCommand do
-  let(:model) { spy }
+  let(:model) { User.new }
 
   subject { described_class.new(form, model) }
 
@@ -12,18 +12,20 @@ RSpec.describe Rectify::SaveCommand do
   end
 
   context "when the form is invalid" do
-    let(:form) { double(:valid? => true, :attributes => { :name => "Andy" }) }
+    let(:form) do
+      double(:valid? => true, :attributes => { :first_name => "Andy" })
+    end
 
     it "update the model's attributes" do
       subject.call
 
-      expect(model).to have_received(:attributes=).with(:name => "Andy")
+      expect(model).to have_attributes(:first_name => "Andy")
     end
 
     it "saves the model" do
-      subject.call
+      expect(model).to receive(:save!)
 
-      expect(model).to have_received(:save!)
+      subject.call
     end
 
     it "broadcasts :ok" do

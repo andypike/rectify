@@ -4,4 +4,8 @@ class User
 
   attribute :first_name, String
   attribute :age,        Integer
+
+  def save!
+    # For mocking an ActiveRecord class
+  end
 end
