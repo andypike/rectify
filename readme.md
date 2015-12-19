@@ -195,7 +195,7 @@ You can use the params hash that a Rails controller provides that contains all
 the data in the request:
 
 ```ruby
-form = User.from_params(params)
+form = UserForm.from_params(params)
 ```
 
 When populating from params we will populate the built in `id` attribute from the
@@ -211,7 +211,7 @@ params = {
   }
 }
 
-form = User.from_params(params)
+form = UserForm.from_params(params)
 
 form.id         # => 1
 form.first_name # => "Andy"
