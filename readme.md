@@ -6,8 +6,8 @@ Rectify is a gem that provides some lightweight classes that will make it easier
 to build Rails applications in a more maintainable way. It's built on top of
 several other gems and adds improved APIs to make things easier.
 
-Rectify is an extraction from a number of projects that I've worked on and used
-these techniques.
+Rectify is an extraction from a number of projects that use these techniques and
+proved to be successful.
 
 To install, add it to your `Gemfile`:
 
@@ -251,7 +251,8 @@ Rectify includes `ActiveModel::Validations` for you so you can use all of the
 Rails validations that you are used to within your models.
 
 Your Form Object has a `#valid?` method that will validate the attributes of your
-form as well as any nested form objects.
+form as well as any (deeply) nested form objects and array attributes that contain
+form objects.
 
 ### Strong Parameters
 
@@ -260,6 +261,206 @@ parameters. That's because with Form Objects you do not need strong parameters.
 You only specify attributes in your form that are allowed to be accepted. All
 other data in your params hash is ignored.
 
+Take a look at [Virtus](https://github.com/solnic/virtus) for more information
+about how to build a form object.
+
 ## Commands
 
-Docs coming soon...
+Commands in Rectify are based on [Wisper](https://github.com/krisleech/wisper)
+which allows classes to broadcast events for publish/subscribe capabilities.
+`Rectify::Command` is a lightweight class that gives an alternate API and adds some
+helper methods to improve Command logic.
+
+The reason for using the pub/sub model rather than returning a result means that
+we can reduce the number of conditionals in our code as the outcome of a Command
+might be more complex than just success or failure.
+
+With regard to naming, Rectify suggests using verbs rather than nouns for Command
+class names, for example `RegisterAccount`, `PlaceOrder` or `GenerateEndOfYearReport`.
+Notice that we don't suffix commands with `Command` or `Service` or similar.
+
+Here is an example Command with the structure Rectify suggests (as seen in the
+overview above):
+
+```ruby
+class RegisterAccount < Rectify::Command
+  def initialize(form)
+    @form = form
+  end
+
+  def call
+    return broadcast(:invalid) unless form.valid?
+
+    transaction do
+      creates_user
+      notifiy_admins
+      audit_event
+      send_user_details_to_crm
+    end
+
+    broadcast(:ok)
+  end
+
+  private
+
+  attr_reader :form
+
+  def creates_user
+    # ...
+  end
+
+  def notifiy_admins
+    # ...
+  end
+
+  def audit_event
+    # ...
+  end
+
+  def send_user_details_to_crm
+    # ...
+  end
+end
+```
+
+To invoke this Command, you would do the following:
+
+```ruby
+def create
+  @form = RegistrationForm.from_params(params)
+
+  RegisterAccount.call(@form) do
+    on(:ok)      { redirect_to dashboard_path }
+    on(:invalid) { render :new }
+    on(:already_registered) { redirect_to login_path }
+  end
+end
+```
+
+### What happens inside a Command?
+
+When you call the `.call` class method, Rectify will instantiate a new instance
+of the command and will pass the parameters to it's constructor, it will then
+call the instance method `#call` on the newly created command object. The `.call`
+method also allows you to supply a block where you can handle the events that may
+have been broadcast from the command.
+
+The events that your Command broadcasts can be anything, Rectify suggests `:ok`
+for success and `:invalid` if the form data is not valid, but it's totally up to
+you.
+
+From here you can choose to implement your Command how you see fit. A
+`Rectify::Command` only has to have the instance method `#call`.
+
+### Writing Commands
+
+As your application grows and Commands get more complex we recommend using the
+structure above. Within the `#call` method you first check that the input data is
+valid. If it is you then perform the various tasks that need to be completed.
+We recommend using private methods for each step that are well named which makes
+it very easy for anyone reading the code to workout what it does.
+
+Feel free to use other classes and objects where appropriate to keep your code
+well organised and maintainable.
+
+### Events
+
+Just as in [Wisper](https://github.com/krisleech/wisper), you fire events using
+the `broadcast` method. You can use any event name you like. You can also pass
+parameters to the handling block:
+
+```ruby
+# within the command:
+
+class RegisterAccount < Rectify::Command
+  def call
+    # ...
+    broadcast(:ok, user)
+  end
+end
+
+# within the controller:
+
+def create
+  RegisterAccount.call(@form) do
+    on(:ok) { |user| logger.info("#{user.first_name} created") }
+  end
+end
+```
+
+When an event is handled, the appropriate block is called in the context of the
+controller. Basically, any method call within the block is delegated back to the
+controller.
+
+You may occasionally want to set an instance variable within a handler block.
+Currently, the way you do this is via the `expose` method within the handler
+block. You pass a hash of the instance variables you wish to expose to the view
+and they will then be available:
+
+```ruby
+# within the controller:
+
+def create
+  RegisterAccount.call(@form) do
+    on(:ok) { |user| expose(:user => user) }
+  end
+end
+
+# within the view:
+
+<p>Hello <%= @user.first_name %></p>
+```
+
+Instance variables cannot be set within the handler block directly at present but
+this is actually a rare case.
+
+Take a look at [Wisper](https://github.com/krisleech/wisper) for more information
+around how to do publish/subscribe.
+
+## Where do you put them?
+
+The next inevitable question is "Where do I put my Forms and Commands?". Rectify
+suggests grouping your classes by feature rather than by pattern. For example,
+create a folder called `features` and within that, create a folder for each broad
+feature of your application. Something like the following:
+
+```
+.
+└── app
+    ├── controllers
+    ├── features
+    │   ├── billing
+    │   ├── fulfilment
+    │   ├── ordering
+    │   ├── reporting
+    │   └── security
+    ├── models
+    └── views
+```
+
+Then you would place your classes in the appropriate feature folder. If you follow
+this pattern remember to namespace your classes with a matching module:
+
+```ruby
+# in app/features/billing/send_invoice.rb
+
+module Billing
+  class SendInvoice < Rectify::Command
+    # ...
+  end
+end
+```
+
+You don't need to alter your load path as everything in the `app` folder is
+loaded automatically.
+
+## What's next?
+
+We're also considering how we can improve view logic. We may introduce a
+lightweight way to create a Presenter Object that can contain the
+presentational logic for a view (or component).
+
+Also, we stated above that the models should be responsible for data access. We
+may introduce a nice way to keep using the power of ActiveRecord but in a way
+where your models don't end up as a big ball of queries. We're thinking about
+Query Objects and a nice way to use raw SQL.
