@@ -222,6 +222,20 @@ The other thing to notice is that (thanks to Virtus), attribute values are cast
 to the correct type. The params hash is actually all string based but when you
 get values from the form, they are returned as the correct type (see `id` above).
 
+In addition to the params hash, you may want to add additional contextual data.
+This can be done by supplying a second hash to the `.from_params` method.
+Elements from this hash will be available to populate form attributes as if they
+were under the params key:
+
+```ruby
+form = UserForm.from_params(params, :ip_address => "1.2.3.4")
+
+form.id         # => 1
+form.first_name # => "Andy"
+form.last_name  # => "Pike"
+form.ip_address # => "1.2.3.4"
+```
+
 **Model**
 
 The final way is to pass an ActiveModel to the form to populate it's attribute
@@ -453,6 +467,21 @@ end
 
 You don't need to alter your load path as everything in the `app` folder is
 loaded automatically.
+
+## Trade off
+
+This style of Rails architecture is not a silver bullet for all projects. If your
+app is pretty much just basic CRUD then you are unlikely to get much benefit from
+this. However, if your app is more than just CRUD then you should see an
+improvement in code structure and maintainability.
+
+The downside to this approach is that there will be many more classes and files
+to deal with. This can be tricky as the application gets bigger to hold the whole
+system in your head. Personally I would prefer that as maintaining it will be
+easier as all code around a specific user task is on one place.
+
+Before you use these methods in your project, consider the trade off and use these
+strategies where they make sense for you and your project.
 
 ## What's next?
 
