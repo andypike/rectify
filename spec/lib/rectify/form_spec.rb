@@ -276,4 +276,18 @@ RSpec.describe Rectify::Form do
       end
     end
   end
+
+  describe "#invalid?" do
+    it "returns true when #valid? returns false" do
+      form = RegistrationForm.new(:email => "")
+
+      expect(form).to be_invalid
+    end
+
+    it "returns false when #valid? returns true" do
+      form = RegistrationForm.new(:email => "me@here.com")
+
+      expect(form).not_to be_invalid
+    end
+  end
 end

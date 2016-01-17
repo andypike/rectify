@@ -41,7 +41,7 @@ module Rectify
       id.present? && id.to_i > 0
     end
 
-    def valid?
+    def valid?(context = nil)
       [super, form_attributes_valid?, arrays_attributes_valid?].all?
     end
 

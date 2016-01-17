@@ -2,11 +2,11 @@ PATH
   remote: .
   specs:
     rectify (0.0.2)
-      activemodel (~> 4.2.0)
-      activerecord (~> 4.2.0)
-      activesupport (~> 4.2.0)
-      virtus (~> 1.0.5)
-      wisper (~> 1.6.1)
+      activemodel (~> 4.2, >= 4.2.0)
+      activerecord (~> 4.2, >= 4.2.0)
+      activesupport (~> 4.2, >= 4.2.0)
+      virtus (~> 1.0, >= 1.0.5)
+      wisper (~> 1.6, >= 1.6.1)
 
 GEM
   remote: https://rubygems.org/
@@ -82,8 +82,8 @@ DEPENDENCIES
   pry (~> 0.10.3)
   rectify!
   rspec (~> 3.4)
-  rspec-collection_matchers (~> 1.1.2)
+  rspec-collection_matchers (~> 1.1, >= 1.1.2)
   wisper-rspec (~> 0.0.2)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

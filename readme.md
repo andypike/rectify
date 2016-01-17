@@ -303,7 +303,7 @@ class RegisterAccount < Rectify::Command
   end
 
   def call
-    return broadcast(:invalid) unless form.valid?
+    return broadcast(:invalid) if form.invalid?
 
     transaction do
       creates_user
@@ -435,14 +435,14 @@ around how to do publish/subscribe.
 
 The next inevitable question is "Where do I put my Forms and Commands?". Rectify
 suggests grouping your classes by feature rather than by pattern. For example,
-create a folder called `features` and within that, create a folder for each broad
-feature of your application. Something like the following:
+create a folder called `core` (this can be anything) and within that, create a
+folder for each broad feature of your application. Something like the following:
 
 ```
 .
 └── app
     ├── controllers
-    ├── features
+    ├── core
     │   ├── billing
     │   ├── fulfilment
     │   ├── ordering
@@ -456,7 +456,7 @@ Then you would place your classes in the appropriate feature folder. If you foll
 this pattern remember to namespace your classes with a matching module:
 
 ```ruby
-# in app/features/billing/send_invoice.rb
+# in app/core/billing/send_invoice.rb
 
 module Billing
   class SendInvoice < Rectify::Command
