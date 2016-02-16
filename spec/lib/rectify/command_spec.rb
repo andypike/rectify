@@ -42,15 +42,5 @@ RSpec.describe Rectify::Command do
       expect(@success).to be(true)
       expect(@failure).to be(false)
     end
-
-    it "sets instance variables on the caller via expose" do
-      @success = false
-
-      SuccessCommand.call do
-        on(:success) { expose(:success => true) }
-      end
-
-      expect(@success).to be(true)
-    end
   end
 end

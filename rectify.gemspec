@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency "activemodel",   "~> 4.2", ">= 4.2.0"
   s.add_dependency "activerecord",  "~> 4.2", ">= 4.2.0"
 
+  s.add_development_dependency "actionpack",    "~> 4.2", ">= 4.2.0"
   s.add_development_dependency "awesome_print", "~> 1.6"
   s.add_development_dependency "pry",           "~> 0.10.3"
   s.add_development_dependency "wisper-rspec",  "~> 0.0.2"

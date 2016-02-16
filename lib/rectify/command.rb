@@ -13,12 +13,6 @@ module Rectify
       instance_eval(&block)
     end
 
-    def expose(instance_variables)
-      instance_variables.each do |name, value|
-        @caller.instance_variable_set("@#{name}", value)
-      end
-    end
-
     def transaction(&block)
       ActiveRecord::Base.transaction(&block) if block_given?
     end

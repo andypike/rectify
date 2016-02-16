@@ -4,6 +4,7 @@ require "rspec/collection_matchers"
 require "wisper/rspec/matchers"
 require "awesome_print"
 require "pry"
+require "action_controller"
 
 Dir["spec/support/**/*.rb"].each  { |f| require File.expand_path(f) }
 Dir["spec/fixtures/**/*.rb"].each { |f| require File.expand_path(f) }

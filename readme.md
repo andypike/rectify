@@ -23,14 +23,17 @@ bundle install
 
 ## Overview
 
-Currently, Rectify consists of two main concepts: Form Objects and Commands. You
-can use these separately or together to improve the structure of your Rails
+Currently, Rectify consists of the following concepts:
+
+* Form Objects
+* Commands
+* Presenters
+
+You can use these separately or together to improve the structure of your Rails
 applications.
 
 The main problem that Rectify tries to solve is where your logic should go. Commonly,
-business logic is either placed in the controller or the model. The opinion of Rectify
-is that both of these places are incorrect and that your models in particular are
-doing too much.
+business logic is either placed in the controller or the model and the views are filled with too much logic. The opinion of Rectify is that these places are incorrect and that your models in particular are doing too much.
 
 Rectify's opinion is that controllers should just be concerned with HTTP related
 things and models should just be concerned with data access. The problem then
@@ -38,13 +41,20 @@ becomes, how and where do you place validations and other business logic.
 
 Using Rectify, the Form Objects contain validations and represent the data input
 of your system. Commands then take a Form Object (as well as other data) and
-perform a single action which is invoked by a controller.
+perform a single action which is invoked by a controller. Presenters contain the
+presentation logic in a way that is easily testable and keeps your views as clean
+as possible.
 
-Here's an example when a user registers an account. This creates a user, sends
-some emails, does some special auditing and integrates with a third party system:
+Here's an example controller that shows details about a user and also allows a user to register an account. This creates a user, sends some emails, does some special auditing and integrates with a third party system:
 
 ```ruby
 class UserController < ApplicationController
+  include Rectify::Controller
+
+  def show
+    present UserDetailsPresenter.new(:user => current_user)
+  end
+
   def new
     @form = RegistrationForm.new
   end
@@ -70,9 +80,11 @@ HTTP           => Controller  (redirecting, rendering, etc)
 Data Input     => Form Object (validation, acceptable input)
 Business Logic => Command     (logic for a specific use case)
 Data Access    => Model       (relationships, queries)
+View Logic     => Presenter   (formatting data)
 ```
 
-The next sections will give further details about using Form Objects and Commands.
+The next sections will give further details about using Form Objects, Commands
+and Presenters.
 
 ## Form Objects
 
@@ -84,8 +96,8 @@ Here is how you define a form object:
 
 ```ruby
 class UserForm < Rectify::Form
-  attribute :first_name,  String
-  attribute :last_name,   String
+  attribute :first_name, String
+  attribute :last_name,  String
 
   validates :first_name, :last_name, :presence => true
 end
@@ -406,35 +418,227 @@ When an event is handled, the appropriate block is called in the context of the
 controller. Basically, any method call within the block is delegated back to the
 controller.
 
-You may occasionally want to set an instance variable within a handler block.
-Currently, the way you do this is via the `expose` method within the handler
-block. You pass a hash of the instance variables you wish to expose to the view
-and they will then be available:
+You may occasionally want to expose a value within a handler block to the view.
+You do this via the `expose` method within the handler block. If you want to
+use `expose` then you must include the `Rectify::Controller` module in your
+controller. You pass a hash of the variables you wish to expose to the view and
+they will then be available. If you have set a Presenter for the view then
+`expose` will try to set an attribute on that presenter. If there is no Presenter
+or the Presenter doesn't have a matching attribute then `expose` will set an
+instance variable of the same name. See below for more details about Presenters.
 
 ```ruby
 # within the controller:
 
+include Rectify::Controller
+
 def create
+  present HomePresenter.new(:name => "Guest")
+
   RegisterAccount.call(@form) do
-    on(:ok) { |user| expose(:user => user) }
+    on(:ok) { |user| expose(:name => user.name, :greeting => "Hello") }
   end
 end
-
-# within the view:
-
-<p>Hello <%= @user.first_name %></p>
 ```
 
-Instance variables cannot be set within the handler block directly at present but
-this is actually a rare case.
+```html
+<!-- within the view: -->
+
+<p><%= @greeting %> <%= presenter.name %></p>
+# => <p>Hello Andy</p>
+```
 
 Take a look at [Wisper](https://github.com/krisleech/wisper) for more information
 around how to do publish/subscribe.
 
-## Where do you put them?
+## Presenters
 
-The next inevitable question is "Where do I put my Forms and Commands?". Rectify
-suggests grouping your classes by feature rather than by pattern. For example,
+A Presenter is a class that contains the presentational logic for your views. These
+are also known as an "exhibit", "view model", "view object" or just a "view" (Rails
+views are actually templates, but anyway). To avoid confusion Rectify calls these
+classes Presenters.
+
+It's often the case that you need some logic that is just for the UI. The same
+question comes up, where should this logic go? You could put it directly in the
+view, add it to the model or create a helper. Rectify's opinion is that all of
+these are incorrect. Instead, create a Presenter for the view (or component of
+the view) and place your logic here. These classes are easily testable and provide
+a more object oriented approach to the problem.
+
+To create a Presenter just derive off of `Rectify::Presenter`, add attributes as
+you do for Form Objects using [Virtus](https://github.com/solnic/virtus) `attribute`
+declaration. Inside a Presenter you have access to all view helper methods so
+it's easy to move the presetation logic here:
+
+```ruby
+class UserDetailsPresenter < Rectify::Presenter
+  attribute :user, User
+
+  def edit_link
+    return "" unless user.admin?
+
+    link_to "Edit #{user.name}", edit_user_path(user)
+  end
+end
+```
+
+Once you have a Presenter, you typically create it in your controller and make it
+accessible to your views. There are two ways to do that. The first way is to just
+treat it as a normal class:
+
+```ruby
+class UsersController < ApplicationController
+  def show
+    user = User.find(params[:id])
+
+    @presenter = UserDetailsPresenter.new(:user => user).for_controller(self)
+  end
+end
+```
+
+You need to call `#for_controller` and pass it a controller instance which will
+allow it access to the view helpers. You can then use the Presenter in your views
+as you would expect:
+
+```html
+<p><%= @presenter.edit_link %></p>
+```
+
+The second way is a little cleaner as we have supplied a few helper methods to
+clean up remove some of the boilerplate. You need to include the `Rectify::Controller`
+module and then use the `present` helper:
+
+```ruby
+class UsersController < ApplicationController
+  include Rectify::Controller
+
+  def show
+    user = User.find(params[:id])
+
+    present UserDetailsPresenter.new(:user => user)
+  end
+end
+```
+
+In your view, you can access this presenter using the `presenter` helper method:
+
+```html
+<p><%= presenter.edit_link %></p>
+```
+
+We recommend having a single Presenter per view but you may want to have more
+than one presenter. You can use a Presenter to to hold the presentation logic
+of your layout or for a component view. To do this, you can either use the first
+method above or use the `present` method and add a `for` option with any key:
+
+```ruby
+class ApplicationController < ActionController::Base
+  include Rectify::Controller
+
+  before_action { present LayoutPresenter.new(:user => user), :for => :layout }
+end
+```
+
+To access this Presenter in the view, just pass the Presenter key to the `presenter`
+method like so:
+
+```html
+<p><%= presenter(:layout).login_link %></p>
+```
+
+### Updating values of a Presenter
+
+After a presenter has been instantiated you can update it's values but just setting
+their attributes:
+
+```ruby
+class UsersController < ApplicationController
+  include Rectify::Controller
+
+  def show
+    user = User.find(params[:id])
+
+    present UserDetailsPresenter.new(:user => user)
+    presenter.user = User.first
+  end
+
+  # or...
+
+  def other_action
+    user = User.find(params[:id])
+
+    @presenter = UserDetailsPresenter.new(:user => user).for_controller(self)
+    @presenter.user = User.first
+  end
+end
+```
+
+As mentioned above in the Commands section, you can use the `expose` method (if
+you include `Rectify::Controller`). You can use this anywhere in the controller
+action including the Command handler block. If you have set a Presenter for the
+view then `expose` will try to set an attribute on that presenter. If there is
+no Presenter or the Presenter doesn't have a matching attribute then `expose`
+will set an instance variable of the same name:
+
+```ruby
+class UsersController < ApplicationController
+  include Rectify::Controller
+
+  def show
+    user = User.find(params[:id])
+
+    present UserDetailsPresenter.new(:user => user)
+
+    expose(:user => User.first, :message => "Hello there!")
+
+    # presenter.user == User.first
+    # @message == "Hello there!"
+  end
+end
+```
+
+### Decorators
+
+Another option for containing your UI logic is to use a Decorator. Rectify doesn't
+ship with a built in way to create a decorator but we recommend either using
+[Draper](https://github.com/drapergem/draper) or you can roll your own using
+`SimpleDelegator`:
+
+```ruby
+class UserDecorator < SimpleDelegator
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+end
+
+user = User.new(:first_name => "Andy", :last_name => "Pike")
+decorator = UserDecorator.new(user)
+decorator.full_name # => "Andy Pike"
+```
+
+If you want to decorate a collection of objects you can do that by adding the
+`for_collection` method:
+
+```ruby
+class UserDecorator < SimpleDelegator
+  # ...
+
+  def self.for_collection(users)
+    users.map { |u| new(u) }
+  end
+end
+
+users = UserDecorator.for_collection(User.all)
+user.each do |u|
+  u.full_name # => Works for each user :o)
+end
+```
+
+## Where do I put my files?
+
+The next inevitable question is "Where do I put my Forms, Commands and Presenters?".
+You could create `forms`, `commands` and `presenters` folders and follow the Rails Way.
+Rectify suggests grouping your classes by feature rather than by pattern. For example,
 create a folder called `core` (this can be anything) and within that, create a
 folder for each broad feature of your application. Something like the following:
 
@@ -468,7 +672,7 @@ end
 You don't need to alter your load path as everything in the `app` folder is
 loaded automatically.
 
-## Trade off
+## Trade offs
 
 This style of Rails architecture is not a silver bullet for all projects. If your
 app is pretty much just basic CRUD then you are unlikely to get much benefit from
@@ -485,11 +689,8 @@ strategies where they make sense for you and your project.
 
 ## What's next?
 
-We're also considering how we can improve view logic. We may introduce a
-lightweight way to create a Presenter Object that can contain the
-presentational logic for a view (or component).
-
-Also, we stated above that the models should be responsible for data access. We
+We stated above that the models should be responsible for data access. We
 may introduce a nice way to keep using the power of ActiveRecord but in a way
 where your models don't end up as a big ball of queries. We're thinking about
-Query Objects and a nice way to use raw SQL.
+Query Objects and a nice way to do this and we're also thinking about a nicer way
+to use raw SQL.
