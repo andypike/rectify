@@ -25,9 +25,9 @@ bundle install
 
 Currently, Rectify consists of the following concepts:
 
-* Form Objects
-* Commands
-* Presenters
+* [Form Objects](#form-objects)
+* [Commands](#commands)
+* [Presenters](#presenters)
 
 You can use these separately or together to improve the structure of your Rails
 applications.
@@ -71,9 +71,7 @@ class UserController < ApplicationController
 end
 ```
 
-The `RegistrationForm` Form Object encapsulates the relevant data that is required for the
-action and the `RegisterAccount` Command encapsulates the business logic of registering
-a new account. The controller is clean and business logic now has a natural home:
+The `RegistrationForm` Form Object encapsulates the relevant data that is required for the action and the `RegisterAccount` Command encapsulates the business logic of registering a new account. The controller is clean and business logic now has a natural home:
 
 ```
 HTTP           => Controller  (redirecting, rendering, etc)
@@ -548,7 +546,7 @@ method like so:
 
 ### Updating values of a Presenter
 
-After a presenter has been instantiated you can update it's values but just setting
+After a presenter has been instantiated you can update it's values by just setting
 their attributes:
 
 ```ruby
