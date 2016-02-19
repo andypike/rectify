@@ -114,15 +114,17 @@ RSpec.describe Rectify::Form do
     end
 
     context "when a model is not explicitally mimicked" do
-      it "uses the class name of the form minus the `Form` suffix as the model name" do
-        expect(OrderForm.model_name.name).to eq("Order")
+      describe "#model_name" do
+        it "returns the class name minus the `Form` suffix" do
+          expect(OrderForm.model_name.name).to eq("Order")
+        end
+
+        it "returns the class name minus the `Form` suffix and namespace" do
+          expect(Inventory::ProductForm.model_name.name).to eq("Product")
+        end
       end
 
-      it "uses the class name of the form minus the `Form` suffix and namespace as the model name" do
-        expect(Inventory::ProductForm.model_name.name).to eq("Product")
-      end
-
-      it "uses the class name of the form minus the `Form` suffix as the params key" do
+      it "uses the class name minus the `Form` suffix as the params key" do
         order_params = {
           "order" => {
             "number" => "12345"
@@ -239,7 +241,9 @@ RSpec.describe Rectify::Form do
     describe "validating nested forms" do
       context "when the nested forms have valid values" do
         it "returns true" do
-          form = SchoolForm.new(:head => TeacherForm.new(:name => "me@here.com"))
+          form = SchoolForm.new(
+            :head => TeacherForm.new(:name => "me@here.com")
+          )
 
           expect(form).to be_valid
           expect(form.head).to be_valid

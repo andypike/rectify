@@ -7,7 +7,9 @@ module Rectify
 
     def self.from_params(params, additional_params = {})
       params     = params.with_indifferent_access
-      attributes = params.fetch(mimicked_model_name, {}).merge(additional_params)
+      attributes = params
+        .fetch(mimicked_model_name, {})
+        .merge(additional_params)
 
       new(attributes).tap do |f|
         f.id = params[:id]
