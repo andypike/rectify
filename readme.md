@@ -49,7 +49,7 @@ Here's an example controller that shows details about a user and also allows a u
 
 ```ruby
 class UserController < ApplicationController
-  include Rectify::Controller
+  include Rectify::ControllerHelpers
 
   def show
     present UserDetailsPresenter.new(:user => current_user)
@@ -418,7 +418,7 @@ controller.
 
 You may occasionally want to expose a value within a handler block to the view.
 You do this via the `expose` method within the handler block. If you want to
-use `expose` then you must include the `Rectify::Controller` module in your
+use `expose` then you must include the `Rectify::ControllerHelpers` module in your
 controller. You pass a hash of the variables you wish to expose to the view and
 they will then be available. If you have set a Presenter for the view then
 `expose` will try to set an attribute on that presenter. If there is no Presenter
@@ -428,7 +428,7 @@ instance variable of the same name. See below for more details about Presenters.
 ```ruby
 # within the controller:
 
-include Rectify::Controller
+include Rectify::ControllerHelpers
 
 def create
   present HomePresenter.new(:name => "Guest")
@@ -503,12 +503,12 @@ as you would expect:
 ```
 
 The second way is a little cleaner as we have supplied a few helper methods to
-clean up remove some of the boilerplate. You need to include the `Rectify::Controller`
+clean up remove some of the boilerplate. You need to include the `Rectify::ControllerHelpers`
 module and then use the `present` helper:
 
 ```ruby
 class UsersController < ApplicationController
-  include Rectify::Controller
+  include Rectify::ControllerHelpers
 
   def show
     user = User.find(params[:id])
@@ -531,7 +531,7 @@ method above or use the `present` method and add a `for` option with any key:
 
 ```ruby
 class ApplicationController < ActionController::Base
-  include Rectify::Controller
+  include Rectify::ControllerHelpers
 
   before_action { present LayoutPresenter.new(:user => user), :for => :layout }
 end
@@ -551,7 +551,7 @@ their attributes:
 
 ```ruby
 class UsersController < ApplicationController
-  include Rectify::Controller
+  include Rectify::ControllerHelpers
 
   def show
     user = User.find(params[:id])
@@ -572,7 +572,7 @@ end
 ```
 
 As mentioned above in the Commands section, you can use the `expose` method (if
-you include `Rectify::Controller`). You can use this anywhere in the controller
+you include `Rectify::ControllerHelpers`). You can use this anywhere in the controller
 action including the Command handler block. If you have set a Presenter for the
 view then `expose` will try to set an attribute on that presenter. If there is
 no Presenter or the Presenter doesn't have a matching attribute then `expose`
@@ -580,7 +580,7 @@ will set an instance variable of the same name:
 
 ```ruby
 class UsersController < ApplicationController
-  include Rectify::Controller
+  include Rectify::ControllerHelpers
 
   def show
     user = User.find(params[:id])

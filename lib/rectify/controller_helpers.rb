@@ -1,5 +1,5 @@
 module Rectify
-  module Controller
+  module ControllerHelpers
     def self.included(base_class)
       base_class.helper_method(:presenter)
     end

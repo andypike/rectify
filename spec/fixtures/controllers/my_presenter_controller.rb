@@ -1,5 +1,5 @@
 class MyPresenterController < ActionController::Base
-  include Rectify::Controller
+  include Rectify::ControllerHelpers
 
   def template_presenter
     present SimplePresenter.new(:first_name => "Andy")

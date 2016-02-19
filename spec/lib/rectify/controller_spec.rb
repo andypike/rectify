@@ -1,4 +1,4 @@
-RSpec.describe Rectify::Controller do
+RSpec.describe Rectify::ControllerHelpers do
   let(:controller)   { MyPresenterController.new }
   let(:view_context) { controller.view_context }
 
