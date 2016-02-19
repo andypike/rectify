@@ -23,7 +23,9 @@ module Rectify
     attr_reader :controller
 
     def view_context
-      controller && controller.view_context
+      @view_context ||= begin
+        controller && controller.view_context
+      end
     end
   end
 end
