@@ -503,7 +503,7 @@ provide a more object oriented approach to the problem.
 To create a Presenter just derive off of `Rectify::Presenter`, add attributes as
 you do for Form Objects using [Virtus](https://github.com/solnic/virtus)
 `attribute` declaration. Inside a Presenter you have access to all view helper
-methods so it's easy to move the presetation logic here:
+methods so it's easy to move the presentation logic here:
 
 ```ruby
 class UserDetailsPresenter < Rectify::Presenter
