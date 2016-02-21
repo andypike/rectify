@@ -1,3 +1,5 @@
+require "bundler/setup"
+
 require "virtus"
 require "wisper"
 require "active_support/core_ext/hash"
