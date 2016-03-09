@@ -19,15 +19,21 @@ RSpec.describe Rectify::Presenter do
     end
   end
 
-  describe "#for_controller" do
+  describe "#attach_controller" do
     let(:controller) { EmptyController.new }
 
     context "when a controller is supplied" do
       it "delegates view helper calls to `controller#view_context`" do
         presenter = SimplePresenter.new(:first_name => "Andy")
-        presenter.for_controller(controller)
+        presenter.attach_controller(controller)
 
         expect(presenter.edit_link).to eq('<a href="edit.html">Edit Andy</a>')
+      end
+
+      it "returns the presenter object" do
+        presenter = SimplePresenter.new(:first_name => "Andy")
+
+        expect(presenter.attach_controller(controller)).to eq(presenter)
       end
     end
 

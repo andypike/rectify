@@ -2,8 +2,9 @@ module Rectify
   class Presenter
     include Virtus.model
 
-    def for_controller(controller)
+    def attach_controller(controller)
       @controller = controller
+      self
     end
 
     def method_missing(method_name, *args, &block)
