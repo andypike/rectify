@@ -527,12 +527,12 @@ class UsersController < ApplicationController
   def show
     user = User.find(params[:id])
 
-    @presenter = UserDetailsPresenter.new(:user => user).for_controller(self)
+    @presenter = UserDetailsPresenter.new(:user => user).attach_controller(self)
   end
 end
 ```
 
-You need to call `#for_controller` and pass it a controller instance which will
+You need to call `#attach_controller` and pass it a controller instance which will
 allow it access to the view helpers. You can then use the Presenter in your
 views as you would expect:
 
@@ -603,7 +603,7 @@ class UsersController < ApplicationController
   def other_action
     user = User.find(params[:id])
 
-    @presenter = UserDetailsPresenter.new(:user => user).for_controller(self)
+    @presenter = UserDetailsPresenter.new(:user => user).attach_controller(self)
     @presenter.user = User.first
   end
 end
