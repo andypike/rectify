@@ -29,6 +29,7 @@ Currently, Rectify consists of the following concepts:
 * [Form Objects](#form-objects)
 * [Commands](#commands)
 * [Presenters](#presenters)
+* [Query Objects](#query-objects)
 
 You can use these separately or together to improve the structure of your Rails
 applications.
@@ -39,14 +40,20 @@ views are filled with too much logic. The opinion of Rectify is that these
 places are incorrect and that your models in particular are doing too much.
 
 Rectify's opinion is that controllers should just be concerned with HTTP related
-things and models should just be concerned with data access. The problem then
-becomes, how and where do you place validations and other business logic.
+things and models should just be concerned with data relationships. The problem
+then becomes, how and where do you place validations, queries and other business
+logic?
 
-Using Rectify, the Form Objects contain validations and represent the data input
+Using Rectify, Form Objects contain validations and represent the data input
 of your system. Commands then take a Form Object (as well as other data) and
-perform a single action which is invoked by a controller. Presenters contain the
-presentation logic in a way that is easily testable and keeps your views as
+perform a single action which is invoked by a controller. Query objects
+encapsulate a single database query (and any logic it needs). Presenters contain
+the presentation logic in a way that is easily testable and keeps your views as
 clean as possible.
+
+Rectify is designed to be very lightweight and allows you to use some or all of
+it's components. We also advise to use these components where they make sense
+not just blindly everywhere. More on that later.
 
 Here's an example controller that shows details about a user and also allows a
 user to register an account. This creates a user, sends some emails, does some
@@ -82,11 +89,12 @@ business logic of registering a new account. The controller is clean and
 business logic now has a natural home:
 
 ```
-HTTP           => Controller  (redirecting, rendering, etc)
-Data Input     => Form Object (validation, acceptable input)
-Business Logic => Command     (logic for a specific use case)
-Data Access    => Model       (relationships, queries)
-View Logic     => Presenter   (formatting data)
+HTTP             => Controller   (redirecting, rendering, etc)
+Data Input       => Form Object  (validation, acceptable input)
+Business Logic   => Command      (logic for a specific use case)
+Data Persistence => Model        (relationships between models)
+Data Access      => Query Object (database queries)
+View Logic       => Presenter    (formatting data)
 ```
 
 The next sections will give further details about using Form Objects, Commands
@@ -670,13 +678,249 @@ user.each do |u|
 end
 ```
 
+## Query Objects
+
+The final main component to Rectify is the Query Object. It's role is to
+encapsulate a single database query and any logic that it query needs to
+operate. It still uses ActiveRecord but adds some very light sugar on the top to
+make this style of architecture easier. This helps to keep your model classes
+lean and gives a natural home to this code.
+
+To create a query object, you create a new class and derive off of
+`Rectify::Query`. The only thing you need to do is to implement the
+`#query` method and return an `ActiveRecord::Relation` object from it:
+
+```ruby
+class ActiveUsers < Rectify::Query
+  def query
+    User.where(:active => true)
+  end
+end
+```
+
+To use this object, you just instantiate it and then use one of the following
+methods to make use of it:
+
+```ruby
+ActiveUsers.new.count   # => Returns the number of records
+ActiveUsers.new.first   # => Returns the first record
+ActiveUsers.new.exists? # => Returns true if there are any records, else false
+ActiveUsers.new.none?   # => Returns true if there are no records, else false
+ActiveUsers.new.to_a    # => Execute the query and returns the resulting objects
+ActiveUsers.new.each do |user| # => Iterates over each result
+  puts user.name
+end
+```
+
+### Passing data to query objects
+
+Passing data that your queries need to operate is best done via the constructor:
+
+```ruby
+class UsersOlderThan < Rectify::Query
+  def initialize(age)
+    @age = age
+  end
+
+  def query
+    User.where("age > ?", @age)
+  end
+end
+
+UsersOlderThan.new(25).count # => Returns the number of users over 25 years old
+```
+
+Sometimes your queries will need to do a little work with the provided data
+before they can use it. Having your query encapsulated in an object makes this
+easy and maintainable (here's a trivial example):
+
+```ruby
+class UsersWithBlacklistedEmail < Rectify::Query
+  def initialize(blacklist)
+    @blacklist = blacklist
+  end
+
+  def query
+    User.where(:email => blacklisted_emails)
+  end
+
+  private
+
+  def blacklisted_emails
+    @blacklist.map { |b| b.email.strip.downcase }
+  end
+end
+```
+
+### Composition
+
+One of this great features of ActiveRecord is the ability to easily compose
+queries together in a simple way which helps reusability. Rectify Query Objects
+can also be combined to created composed queries using the `|` operator as we
+use in Ruby for Set Union. Here's how it looks:
+
+```ruby
+active_users_over_20 = ActiveUsers.new | UsersOlderThan.new(20)
+
+active_users_over_20.count # => Returns number of active users over 20 years old
+```
+
+You can union many queries in this manner which will result in another
+`Rectify::Query` object that you can use just like any other. This results in a
+single database query.
+
+If you don't like this way of composing queries then the other option would be
+to pass in a query object to another in it's constructor and use it as the base
+scope:
+
+```ruby
+class UsersOlderThan < Rectify::Query
+  def initialize(age, scope = AllUsers.new)
+    @age   = age
+    @scope = scope
+  end
+
+  def query
+    @scope.query.where("age > ?", @age)
+  end
+end
+
+UsersOlderThan.new(20, ActiveUsers.new).count
+```
+
+Although this method is possible and maybe useful in some cases it's cleaner to
+use the provided `|` operator so we recommend that approach for the majority of
+the time.
+
+### Leveraging your database
+
+Using `ActiveRecord::Relation` is a great way to construct your database queries
+but sometimes you need to to use features of your database that aren't supported
+by ActiveRecord directly. These are usually database specific and can greatly
+improve your query efficiency. When that happens, you will need to write some
+raw SQL. Rectify Query Objects allow for this. In addition to your `#query`
+method returning an `ActiveRecord::Relation` you can also return an array of
+objects. This means you can run raw SQL using
+`ActiveRecord::Querying#find_by_sql`:
+
+```ruby
+class UsersOverUsingSql < Rectify::Query
+  def initialize(age)
+    @age = age
+  end
+
+  def query
+    User.find_by_sql([
+      "SELECT * FROM users WHERE age > :age ORDER BY age ASC", { :age => @age }
+    ])
+  end
+end
+```
+
+When you do this, the normal `Rectify::Query` methods are available but they
+operate on the returned array rather than on the `ActiveRecord::Relation`. This
+includes composition using the `|` operator but you can't compose an
+`ActiveRecord::Relation` query object with one that returns an array of objects
+from its `#query` method. You can compose two queries where both return arrays
+but be aware that this will query the database for each query object and then
+perform a Ruby array set union on the results. This might not be the most
+efficient way to get the results so only use this when you are sure it's the
+right thing to do.
+
+The above example is fine for short SQL statements but if you are using raw SQL,
+they will probably be much longer than a single line. Rectify provides a small
+module that you can include to makes your query objects cleaner:
+
+```ruby
+class UsersOverUsingSql < Rectify::Query
+  include Rectify::SqlQuery
+
+  def initialize(age)
+    @age = age
+  end
+
+  def model
+    User
+  end
+
+  def sql
+    <<-SQL.strip_heredoc
+      SELECT *
+      FROM users
+      WHERE age > :age
+      ORDER BY age ASC
+    SQL
+  end
+
+  def params
+    { :age => @age }
+  end
+end
+```
+
+Just include `Rectify::SqlQuery` in your query object and then supply the a
+`model` method that returns the model of the returned objects. A
+`params` method that returns a hash containing named parameters that the SQL
+statement requires. Lastly, you must supply a `sql` method that returns the raw
+SQL. We recommend using a heredoc which makes the SQL much cleaner and easier
+to read. Parameters use the ActiveRecord standard symbol notation as shown above
+with the `:age` parameter.
+
+### Stubbing Query Objects in tests
+
+Now that you have your queries nicely encapsulated, it's now easier with a clear
+division of responsibility to improve how you use the database within your
+tests. You should unit test your Query Objects to ensure they return the correct
+data from a know database state.
+
+What you can now do it stub out these database calls when you use them in other
+classes. This improves your test code in a couple of ways:
+
+1. You need less database setup code within your tests. Normally you might use
+something like factory_girl to create records in your database and then when
+your tests run they query this set of data. Stubbing the queries within your
+tests can reduce this complexity.
+2. Fewer database queries running and less factory usage means that your tests
+3. are doing less work and therefore will run a bit faster.
+
+In Rectify, we provide the RSpec helper method `stub_query` that will make
+stubbing Query Objects easy:
+
+```ruby
+# inside spec/rails_helper.rb
+
+require "rectify/rspec"
+
+RSpec.configure do |config|
+  # snip ...
+
+  config.include Rectify::RSpec::Helpers
+end
+
+# within a spec:
+
+it "returns the number of users" do
+  stub_query(UsersOlderThan, :results => [User.new, User.new])
+
+  expect(subject.awesome_method).to eq(2)
+end
+```
+
+As a convenience `:results` accepts either an array of objects or a single
+instance:
+
+```ruby
+stub_query(UsersOlderThan, :results => [User.new, User.new])
+stub_query(UsersOlderThan, :results => User.new)
+```
+
 ## Where do I put my files?
 
-The next inevitable question is "Where do I put my Forms, Commands and
-Presenters?". You could create `forms`, `commands` and `presenters` folders and
-follow the Rails Way. Rectify suggests grouping your classes by feature rather
-than by pattern. For example, create a folder called `core` (this can be
-anything) and within that, create a folder for each broad feature of your
+The next inevitable question is "Where do I put my Forms, Commands, Queries and
+Presenters?". You could create `forms`, `commands`, `queries` and `presenters`
+folders and follow the Rails Way. Rectify suggests grouping your classes by
+feature rather than by pattern. For example, create a folder called `core` (this
+can be anything) and within that, create a folder for each broad feature of your
 application. Something like the following:
 
 ```
@@ -694,7 +938,8 @@ application. Something like the following:
 ```
 
 Then you would place your classes in the appropriate feature folder. If you
-follow this pattern remember to namespace your classes with a matching module:
+follow this pattern remember to namespace your classes with a matching module
+which will allow Rails to load them:
 
 ```ruby
 # in app/core/billing/send_invoice.rb
@@ -709,6 +954,25 @@ end
 You don't need to alter your load path as everything in the `app` folder is
 loaded automatically.
 
+As stated above, if you prefer not to use this method of organizing your code
+then that is totally fine. Just create folders under `app` for the things in
+Rectify that you use:
+
+```
+.
+└── app
+    ├── commands
+    ├── controllers
+    ├── forms
+    ├── models
+    ├── presenters
+    ├── queries
+    └── views
+```
+
+You don't need to make any configuration changes for your preferred folder
+structure, just use whichever you feel most comfortable with.
+
 ## Trade offs
 
 This style of Rails architecture is not a silver bullet for all projects. If
@@ -722,12 +986,21 @@ whole system in your head. Personally I would prefer that as maintaining it will
 be easier as all code around a specific user task is on one place.
 
 Before you use these methods in your project, consider the trade off and use
-these strategies where they make sense for you and your project.
+these strategies where they make sense for you and your project. It maybe most
+pragmatic to use a mixture of the classic Rails Way and the Rectify approach
+depending on the complexity of different areas of your application.
 
-## What's next?
+## Developing Rectify
 
-We stated above that the models should be responsible for data access. We
-may introduce a nice way to keep using the power of ActiveRecord but in a way
-where your models don't end up as a big ball of queries. We're thinking about
-Query Objects and a nice way to do this and we're also thinking about a nicer
-way to use raw SQL.
+Some tests (specifically for Query objects) we need access to a database that
+ActiveRecord can connect to. We use SQLite for this at present. When you run the
+specs with `bundle exec rspec`, the database will be created for you.
+
+There are some Rake tasks to help with the management of this test database
+using normal(ish) commands from Rails:
+
+```
+rake db:migrate   # => Migrates the test database
+rake db:schema    # => Dumps database schema
+rake g:migration  # => Create a new migration file
+```

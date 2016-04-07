@@ -24,4 +24,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "wisper-rspec",  "~> 0.0.2"
   s.add_development_dependency "rspec",         "~> 3.4"
   s.add_development_dependency "rspec-collection_matchers", "~> 1.1", ">= 1.1.2"
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rake"
 end

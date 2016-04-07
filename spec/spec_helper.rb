@@ -1,4 +1,5 @@
 require File.expand_path("../../lib/rectify", __FILE__)
+require File.expand_path("../../lib/rectify/rspec", __FILE__)
 
 require "rspec/collection_matchers"
 require "wisper/rspec/matchers"
@@ -9,13 +10,25 @@ require "action_controller"
 Dir["spec/support/**/*.rb"].each  { |f| require File.expand_path(f) }
 Dir["spec/fixtures/**/*.rb"].each { |f| require File.expand_path(f) }
 
+system("rake db:migrate")
+
+db_config = YAML.load(File.open("spec/config/database.yml"))
+ActiveRecord::Base.establish_connection(db_config)
+
 RSpec.configure do |config|
-  config.expect_with :rspec do |expectations|
+  config.expect_with(:rspec) do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  config.mock_with :rspec do |mocks|
+  config.mock_with(:rspec) do |mocks|
     mocks.verify_partial_doubles = true
+  end
+
+  config.around(:each) do |test|
+    ActiveRecord::Base.transaction do
+      test.run
+      fail ActiveRecord::Rollback
+    end
   end
 
   config.disable_monkey_patching!
@@ -23,4 +36,5 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.include Wisper::RSpec::BroadcastMatcher
+  config.include Rectify::RSpec::Helpers
 end
