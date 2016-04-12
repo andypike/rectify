@@ -20,16 +20,6 @@ module Rectify
       /xi
 
       def self.enable
-        # TODO: Allow a developer to configure what they want stats on.
-        # Currently we report the time taken and number of queries per type or
-        # class. But we are probably more interested in stats outside of feature
-        # specs and Query object specs as these are expected to have queries.
-        # Other classes under test should have less queries as we should stub
-        # out Query object usage which in turns means less setup of database
-        # state using factories. These other classes may well require database
-        # queries as they might need to confirm that database state has
-        # changed correctly for example.
-
         ::RSpec.configure do |config|
           config.reporter.register_listener(
             Reporter.new,

@@ -7,6 +7,8 @@ module Rectify
         end
 
         def render
+          return if query_stats.empty?
+
           header
           rows
           summary

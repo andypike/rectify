@@ -33,7 +33,13 @@ module Rectify
         end
 
         def longest_target
+          return 0 if stats.empty?
+
           stats.keys.max_by(&:length).length
+        end
+
+        def empty?
+          stats.empty?
         end
 
         private
