@@ -15,8 +15,6 @@ system("rake db:migrate")
 db_config = YAML.load(File.open("spec/config/database.yml"))
 ActiveRecord::Base.establish_connection(db_config)
 
-Rectify::RSpec::DatabaseReporter.enable
-
 RSpec.configure do |config|
   config.expect_with(:rspec) do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -33,6 +31,7 @@ RSpec.configure do |config|
     end
   end
 
+  config.formatter = :documentation
   config.disable_monkey_patching!
   config.backtrace_exclusion_patterns << /gems/
   config.order = "random"
@@ -40,3 +39,5 @@ RSpec.configure do |config|
   config.include Wisper::RSpec::BroadcastMatcher
   config.include Rectify::RSpec::Helpers
 end
+
+Rectify::RSpec::DatabaseReporter.enable
