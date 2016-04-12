@@ -60,7 +60,7 @@ RSpec.describe Rectify::Query do
       end
     end
 
-    describe "composition of queries" do
+    describe "#|" do
       it "returns the combination of two queries" do
         User.create!(:first_name => "Megan", :age => 9)
         User.create!(:first_name => "Fred", :age => 11, :active => false)
@@ -92,6 +92,53 @@ RSpec.describe Rectify::Query do
         User.create!(:first_name => "Megan", :age => 21)
 
         expect(ScopedUsersOver.new(20, ActiveUsers.new).count).to eq(1)
+      end
+    end
+
+    describe "#merge" do
+      it "returns the combination of two queries" do
+        User.create!(:first_name => "Megan", :age => 9)
+        User.create!(:first_name => "Fred", :age => 11, :active => false)
+        andy = User.create!(:first_name => "Andy", :age => 38)
+
+        active_users_over_10 = ActiveUsers.new.merge(UsersOver.new(10))
+
+        expect(active_users_over_10.count).to eq(1)
+        expect(active_users_over_10.first).to eq(andy)
+      end
+    end
+
+    describe ".merge" do
+      context "when no queries are supplied" do
+        it "returns a null query" do
+          expect(described_class.merge).to be_a(Rectify::NullQuery)
+        end
+      end
+
+      context "when one query is supplied" do
+        it "returns the query" do
+          query = ActiveUsers.new
+
+          expect(described_class.merge(query)).to eq(query)
+        end
+      end
+
+      context "when more than one query are supplied" do
+        it "returns the combination of multiple queries" do
+          User.create!(:first_name => "Megan", :age => 9)
+          User.create!(:first_name => "Fred", :age => 11, :active => false)
+          User.create!(:first_name => "Grandad", :age => 65)
+          andy = User.create!(:first_name => "Andy", :age => 38)
+
+          active_users_between_10_and_45 = described_class.merge(
+            ActiveUsers.new,
+            UsersOver.new(10),
+            UsersUnder.new(45)
+          )
+
+          expect(active_users_between_10_and_45.count).to eq(1)
+          expect(active_users_between_10_and_45.first).to eq(andy)
+        end
       end
     end
   end
@@ -173,7 +220,7 @@ RSpec.describe Rectify::Query do
       end.to make_database_queries_of(1)
     end
 
-    describe "composition of queries" do
+    describe "#|" do
       it "raises an exeception if a sql query is merged with a relation" do
         expect do
           ActiveUsers.new | UsersOverUsingSql.new(0)
@@ -185,6 +232,24 @@ RSpec.describe Rectify::Query do
         andy  = User.create!(:first_name => "Andy", :age => 38)
 
         users = UsersOverUsingSql.new(20) | UsersOverUsingSql.new(5)
+
+        expect(users.count).to eq(2)
+        expect(users.to_a).to match_array([andy, amber])
+      end
+    end
+
+    describe "#merge" do
+      it "raises an exeception if a sql query is merged with a relation" do
+        expect do
+          ActiveUsers.new.merge(UsersOverUsingSql.new(0))
+        end.to raise_error(Rectify::UnableToComposeQueries)
+      end
+
+      it "joins the result arrays of two sql queries" do
+        amber = User.create!(:first_name => "Amber", :age => 10)
+        andy  = User.create!(:first_name => "Andy", :age => 38)
+
+        users = UsersOverUsingSql.new(20).merge(UsersOverUsingSql.new(5))
 
         expect(users.count).to eq(2)
         expect(users.to_a).to match_array([andy, amber])

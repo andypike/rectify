@@ -1,11 +1,9 @@
 module Rectify
-  module SqlQuery
-    def query
-      model.find_by_sql([sql, params])
-    end
-  end
-
   class Query
+    def self.merge(*queries)
+      queries.reduce(NullQuery.new) { |a, e| a.merge(e) }
+    end
+
     def initialize(scope = ActiveRecord::NullRelation)
       @scope = scope
     end
@@ -23,6 +21,8 @@ module Rectify
         fail UnableToComposeQueries.new(self, other)
       end
     end
+
+    alias_method :merge, :|
 
     def count
       cached_query.count

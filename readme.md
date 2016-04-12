@@ -769,7 +769,29 @@ You can union many queries in this manner which will result in another
 `Rectify::Query` object that you can use just like any other. This results in a
 single database query.
 
-If you don't like this way of composing queries then the other option would be
+As an alternative you can also use the `#merge` method which is simply an alias
+of the `|` operator:
+
+```ruby
+active_users_over_20 = ActiveUsers.new.merge(UsersOlderThan.new(20))
+
+active_users_over_20.count # => Returns number of active users over 20 years old
+```
+
+If you have a long list of queries to compose, Rectify also comes with the class
+method `.merge` which takes multiple queries and combines them for you as if you
+used `|` (or `#merge`) on them all:
+
+```ruby
+active_users_over_20 = Rectify::Query.merge(
+  ActiveUsers.new,
+  UsersOlderThan.new(20)
+)
+
+active_users_over_20.count # => Returns number of active users over 20 years old
+```
+
+If you don't those options for composing queries then the final option would be
 to pass in a query object to another in it's constructor and use it as the base
 scope:
 
@@ -787,10 +809,6 @@ end
 
 UsersOlderThan.new(20, ActiveUsers.new).count
 ```
-
-Although this method is possible and maybe useful in some cases it's cleaner to
-use the provided `|` operator so we recommend that approach for the majority of
-the time.
 
 ### Leveraging your database
 
