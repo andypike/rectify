@@ -6,8 +6,7 @@ module Rectify
     attribute :id, Integer
 
     def self.from_params(params, additional_params = {})
-      params     = params.with_indifferent_access
-      attributes = params
+      attributes = hash_from(params)
         .fetch(mimicked_model_name, {})
         .merge(additional_params)
 
@@ -37,6 +36,11 @@ module Rectify
 
     def self.model_name
       ActiveModel::Name.new(self, nil, mimicked_model_name.to_s.camelize)
+    end
+
+    def self.hash_from(params)
+      params = params.to_unsafe_h if params.respond_to?(:to_unsafe_h)
+      params.with_indifferent_access
     end
 
     def persisted?

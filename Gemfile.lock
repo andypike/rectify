@@ -1,37 +1,37 @@
 PATH
   remote: .
   specs:
-    rectify (0.3.0)
-      activemodel (~> 4.2, >= 4.2.0)
-      activerecord (~> 4.2, >= 4.2.0)
-      activesupport (~> 4.2, >= 4.2.0)
-      virtus (~> 1.0, >= 1.0.5)
-      wisper (~> 1.6, >= 1.6.1)
+    rectify (0.4.0)
+      activemodel (>= 4.2.0)
+      activerecord (>= 4.2.0)
+      activesupport (>= 4.2.0)
+      virtus (~> 1.0.5)
+      wisper (~> 1.6.1)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    actionpack (4.2.5.1)
-      actionview (= 4.2.5.1)
-      activesupport (= 4.2.5.1)
+    actionpack (4.2.6)
+      actionview (= 4.2.6)
+      activesupport (= 4.2.6)
       rack (~> 1.6)
       rack-test (~> 0.6.2)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionview (4.2.5.1)
-      activesupport (= 4.2.5.1)
+    actionview (4.2.6)
+      activesupport (= 4.2.6)
       builder (~> 3.1)
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    activemodel (4.2.5.1)
-      activesupport (= 4.2.5.1)
+    activemodel (4.2.6)
+      activesupport (= 4.2.6)
       builder (~> 3.1)
-    activerecord (4.2.5.1)
-      activemodel (= 4.2.5.1)
-      activesupport (= 4.2.5.1)
+    activerecord (4.2.6)
+      activemodel (= 4.2.6)
+      activesupport (= 4.2.6)
       arel (~> 6.0)
-    activesupport (4.2.5.1)
+    activesupport (4.2.6)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -44,7 +44,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     builder (3.2.2)
-    coderay (1.1.0)
+    coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     descendants_tracker (0.0.4)
@@ -77,7 +77,7 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rake (10.4.2)
+    rake (11.1.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -110,13 +110,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack (~> 4.2, >= 4.2.0)
+  actionpack (>= 4.2.0)
   awesome_print (~> 1.6)
   pry (~> 0.10.3)
   rake
   rectify!
   rspec (~> 3.4)
-  rspec-collection_matchers (~> 1.1, >= 1.1.2)
+  rspec-collection_matchers (~> 1.1)
   sqlite3
   wisper-rspec (~> 0.0.2)
 
