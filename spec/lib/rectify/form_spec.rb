@@ -21,7 +21,7 @@ RSpec.describe Rectify::Form do
 
   describe ".from_params" do
     let(:params) do
-      {
+      ActionController::Parameters.new(
         "id" => "1",
         "user" => {
           "first_name" => "Andy",
@@ -39,7 +39,7 @@ RSpec.describe Rectify::Form do
             { "name" => "Charlie", "number" => "789" }
           ]
         }
-      }
+      )
     end
 
     it "populates attributes from a params hash" do
