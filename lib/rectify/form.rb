@@ -16,21 +16,7 @@ module Rectify
     end
 
     def self.from_model(model)
-      new.tap do |form|
-        attribute_set.each do |a|
-          if model.respond_to?(a.name)  # the model has a matching method/attribute
-            model_value = model.public_send(a.name) # get the value of the attribute from the model, could be a collection, other model or simple type
-            if a.primitive.respond_to?(:from_model) # if the form attribute type is a nested form object (belongs_to)
-              form.public_send("#{a.name}=", a.primitive.from_model(model_value)) # use the .from_model method of that form object
-            elsif a.type.respond_to?(:member_type) && a.type.member_type.respond_to?(:from_model) # if the form attribute is a collection (Set or Array) and it contains form objects (has_many)
-              child_forms = model_value.map { |child_model| a.type.member_type.from_model(child_model) } # map each of the associated models to the form object of the collection
-              form.public_send("#{a.name}=", child_forms) # set the form object collection attribute to the mapped collection (array of form objects)
-            else
-              form.public_send("#{a.name}=", model_value) # set the form object attribute to the value returned by the model method/attribute
-            end
-          end
-        end
-      end
+      Rectify::BuildFormFromModel.new(self, model).build
     end
 
     def self.mimic(model_name)
