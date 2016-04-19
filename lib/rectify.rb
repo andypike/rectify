@@ -8,6 +8,8 @@ require "active_record"
 
 require "rectify/version"
 require "rectify/form"
+require "rectify/form_attribute"
+require "rectify/build_form_from_model"
 require "rectify/command"
 require "rectify/presenter"
 require "rectify/query"

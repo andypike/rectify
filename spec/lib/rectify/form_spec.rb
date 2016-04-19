@@ -140,7 +140,19 @@ RSpec.describe Rectify::Form do
 
   describe ".from_model" do
     let(:model) do
-      User.new(:first_name => "Andy", :age => 38)
+      User.new(
+        :first_name => "Andy",
+        :age        => 38,
+        :contacts   => [
+          Contact.new(:name => "James", :number => "12345")
+        ],
+        :address => Address.new(
+          :street    => "1 High Street",
+          :town      => "Wimbledon",
+          :city      => "London",
+          :post_code => "SW19 1AB"
+        )
+      )
     end
 
     it "populates attributes from an ActiveModel" do
@@ -149,6 +161,27 @@ RSpec.describe Rectify::Form do
       expect(form).to have_attributes(
         :first_name => "Andy",
         :age => 38
+      )
+    end
+
+    it "populates attributes from a model with a has_many" do
+      form = UserForm.from_model(model)
+
+      expect(form.contacts).to have(1).item
+      expect(form.contacts.first).to have_attributes(
+        :name   => "James",
+        :number => "12345"
+      )
+    end
+
+    it "populates attributes from a model with a belongs_to" do
+      form = UserForm.from_model(model)
+
+      expect(form.address).to have_attributes(
+        :street    => "1 High Street",
+        :town      => "Wimbledon",
+        :city      => "London",
+        :post_code => "SW19 1AB"
       )
     end
   end

@@ -1022,3 +1022,13 @@ rake db:migrate   # => Migrates the test database
 rake db:schema    # => Dumps database schema
 rake g:migration  # => Create a new migration file
 ```
+
+### Releasing a new version
+
+Bump the version in `lib/rectify/version.rb` then do the following:
+
+```
+bundle
+gem build rectify.gemspec
+gem push rectify-0.0.0.gem
+```

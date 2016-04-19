@@ -16,7 +16,7 @@ module Rectify
     end
 
     def self.from_model(model)
-      new(model.attributes)
+      Rectify::BuildFormFromModel.new(self, model).build
     end
 
     def self.mimic(model_name)
