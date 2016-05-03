@@ -59,6 +59,10 @@ module Rectify
       self
     end
 
+    def to_param
+      id
+    end
+
     def attributes
       super.except(:id)
     end
