@@ -60,7 +60,7 @@ module Rectify
     end
 
     def to_param
-      id
+      id.to_s
     end
 
     def attributes
