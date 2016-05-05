@@ -22,7 +22,8 @@ RSpec.describe Rectify::Form do
   describe ".from_params" do
     let(:params) do
       ActionController::Parameters.new(
-        "id" => "1",
+        "id"       => "1",
+        "other_id" => "2",
         "user" => {
           "first_name" => "Andy",
           "age"        => "38",
@@ -56,6 +57,12 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect(form.id).to eq(1)
+    end
+
+    it "populates other root level values from a params hash" do
+      form = UserForm.from_params(params)
+
+      expect(form.other_id).to eq(2)
     end
 
     it "populates nested object attributes" do

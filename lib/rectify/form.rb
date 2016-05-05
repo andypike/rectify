@@ -6,13 +6,16 @@ module Rectify
     attribute :id, Integer
 
     def self.from_params(params, additional_params = {})
-      attributes = hash_from(params)
+      params_hash = hash_from(params)
+
+      attribute_names = attribute_set.map(&:name)
+
+      attributes = params_hash
         .fetch(mimicked_model_name, {})
+        .merge(params_hash.slice(*attribute_names))
         .merge(additional_params)
 
-      new(attributes).tap do |f|
-        f.id = params[:id]
-      end
+      new(attributes)
     end
 
     def self.from_model(model)

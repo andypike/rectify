@@ -10,4 +10,5 @@ class UserForm < Rectify::Form
   attribute :address,     AddressForm
   attribute :contacts,    Array[ContactForm]
   attribute :order_count, Integer
+  attribute :other_id,    Integer
 end
