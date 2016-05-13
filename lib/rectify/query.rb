@@ -1,5 +1,7 @@
 module Rectify
   class Query
+    include Enumerable
+
     def self.merge(*queries)
       queries.reduce(NullQuery.new) { |a, e| a.merge(e) }
     end

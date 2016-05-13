@@ -60,6 +60,15 @@ RSpec.describe Rectify::Query do
       end
     end
 
+    describe "#map" do
+      it "returns the mapped collection" do
+        User.create!(:first_name => "Amber", :age => 10)
+        User.create!(:first_name => "Megan", :age => 9)
+
+        expect(AllUsers.new.map(&:age)).to match_array([10, 9])
+      end
+    end
+
     describe "#|" do
       it "returns the combination of two queries" do
         User.create!(:first_name => "Megan", :age => 9)
@@ -204,6 +213,15 @@ RSpec.describe Rectify::Query do
         m = User.create!(:first_name => "Megan", :age => 9)
 
         expect(UsersOverUsingSql.new(0).to_a).to match_array([a, m])
+      end
+    end
+
+    describe "#map" do
+      it "returns the mapped collection" do
+        User.create!(:first_name => "Amber", :age => 10)
+        User.create!(:first_name => "Megan", :age => 9)
+
+        expect(UsersOverUsingSql.new(0).map(&:age)).to match_array([10, 9])
       end
     end
 
