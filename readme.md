@@ -710,6 +710,7 @@ ActiveUsers.new.to_a    # => Execute the query and returns the resulting objects
 ActiveUsers.new.each do |user| # => Iterates over each result
   puts user.name
 end
+ActiveUsers.new.map(&:age) # => All Enumerable methods
 ```
 
 ### Passing data to query objects
