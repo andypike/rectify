@@ -158,7 +158,8 @@ RSpec.describe Rectify::Form do
           :town      => "Wimbledon",
           :city      => "London",
           :post_code => "SW19 1AB"
-        )
+        ),
+        :last_logged_in => DateTime.new(2016, 1, 30, 9, 30, 0)
       )
     end
 
@@ -190,6 +191,12 @@ RSpec.describe Rectify::Form do
         :city      => "London",
         :post_code => "SW19 1AB"
       )
+    end
+
+    it "populates form via custom mapping logic (via #map_model)" do
+      form = UserForm.from_model(model)
+
+      expect(form.last_login_date).to eq("30/01/2016")
     end
   end
 

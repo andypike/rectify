@@ -11,4 +11,9 @@ class UserForm < Rectify::Form
   attribute :contacts,    Array[ContactForm]
   attribute :order_count, Integer
   attribute :other_id,    Integer
+  attribute :last_login_date, String
+
+  def map_model(model)
+    self.last_login_date = model.last_logged_in.strftime("%d/%m/%Y")
+  end
 end

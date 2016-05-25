@@ -70,6 +70,12 @@ module Rectify
       super.except(:id)
     end
 
+    def map_model(model)
+      # Implement this in your form object for custom mapping from model to form
+      # object as part of the `.from_model` call after matching attributes are
+      # populated (optional).
+    end
+
     private
 
     def form_attributes_valid?

@@ -282,8 +282,9 @@ form.ip_address # => "1.2.3.4"
 
 **Model**
 
-The final way is to pass an ActiveModel to the form to populate it's attribute
-values. This is useful when editing a model:
+The final way is to pass a Ruby object instance (which is normally an ActiveModel
+but can be any PORO) to the form to populate it's attribute values. This is useful
+when editing a model:
 
 ```ruby
 user = User.create(:first_name => "Andy", :last_name => "Pike")
@@ -295,8 +296,29 @@ form.first_name # => "Andy"
 form.last_name  # => "Pike"
 ```
 
+This works by trying to match (deeply) the attributes of the form object with the
+passed in object. If there is matching attribute or method in the model, then
+whatever it returns will be assigned to the form attribute.
+
+This works great for most cases, but sometimes you need more control and need the
+ability to do custom mapping from the model to the form. When this is required,
+you just need to implement the `#map_model` method in your form object:
+
+```ruby
+class UserForm < Rectify::Form
+  attribute :full_name, String
+
+  def map_model(model)
+    self.full_name = "#{model.first_name} #{model.last_name}"
+  end
+end
+```
+
+The `#map_model` method is called as part of `.from_model` after all the automatic
+attribute assignment is complete.
+
 One important thing that is different about Rectify forms is that they are not
-bound by a model. You can use a model to populate the forms attributes but that
+bound to a model. You can use a model to populate the form's attributes but that
 is all it will do. It does not keep a reference to the model or interact with
 it.
 
@@ -1021,7 +1043,7 @@ using normal(ish) commands from Rails:
 ```
 rake db:migrate   # => Migrates the test database
 rake db:schema    # => Dumps database schema
-rake g:migration  # => Create a new migration file
+rake g:migration  # => Create a new migration file (use snake_case name)
 ```
 
 ### Releasing a new version

@@ -11,6 +11,8 @@ module Rectify
           model_value = model.public_send(a.name)
           form.public_send("#{a.name}=", a.value_from(model_value))
         end
+
+        form.map_model(model)
       end
     end
 
