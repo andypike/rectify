@@ -1,15 +1,14 @@
 module Rectify
   class StubForm
-    def initialize(attributes)
-      @attributes = attributes
-    end
+    attr_reader :attributes
 
-    def attributes
-      @attributes.except!(:valid?)
+    def initialize(attributes)
+      @valid = attributes.fetch(:valid?, false)
+      @attributes = attributes.except!(:valid?)
     end
 
     def valid?
-      @attributes.fetch(:valid?, false)
+      @valid
     end
 
     def invalid?
