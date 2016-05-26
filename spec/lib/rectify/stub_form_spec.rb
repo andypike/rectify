@@ -48,5 +48,11 @@ RSpec.describe Rectify::StubForm do
 
       expect(form.twitter).to eq("andypike")
     end
+
+    it "doesn't return :valid?" do
+      form = described_class.new(:valid? => true, :name => "Andy", :age => 38)
+
+      expect(form.attributes).to eq(:name => "Andy", :age => 38)
+    end
   end
 end
