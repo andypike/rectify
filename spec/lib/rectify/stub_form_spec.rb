@@ -34,5 +34,19 @@ RSpec.describe Rectify::StubForm do
 
       expect(form.attributes).to eq(:name => "Andy", :age => 38)
     end
+
+    it "allows assignment of attributes passed into the constructor" do
+      form = described_class.new(:name => "Andy", :age => 38)
+      form.name = "Fred"
+
+      expect(form.name).to eq("Fred")
+    end
+
+    it "allows assignment of new attributes" do
+      form = described_class.new(:name => "Andy", :age => 38)
+      form.twitter = "andypike"
+
+      expect(form.twitter).to eq("andypike")
+    end
   end
 end
