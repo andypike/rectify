@@ -285,6 +285,38 @@ RSpec.describe Rectify::Form do
       end
     end
 
+    describe "validating derived forms" do
+      context "when the form and the super class are valid" do
+        it "returns true" do
+          form = ChildForm.new(:school => "High School", :first_name => "Andy")
+
+          expect(form).to be_valid
+          expect(form.errors[:school]).not_to be_present
+          expect(form.errors[:first_name]).not_to be_present
+        end
+      end
+
+      context "when the form is valid but the super class is invalid" do
+        it "returns false" do
+          form = ChildForm.new(:school => "High School", :first_name => "")
+
+          expect(form).not_to be_valid
+          expect(form.errors[:school]).not_to be_present
+          expect(form.errors[:first_name]).to be_present
+        end
+      end
+
+      context "when the form and the super class are invalid" do
+        it "returns false" do
+          form = ChildForm.new(:school => "", :first_name => "")
+
+          expect(form).not_to be_valid
+          expect(form.errors[:school]).to be_present
+          expect(form.errors[:first_name]).to be_present
+        end
+      end
+    end
+
     describe "validating nested forms" do
       context "when the nested forms have valid values" do
         it "returns true" do
@@ -310,7 +342,10 @@ RSpec.describe Rectify::Form do
     describe "validating array attributes containing forms" do
       context "when the array of forms has valid values" do
         it "returns true" do
-          form = UserForm.new(:contacts => [ContactForm.new(:name => "Andy")])
+          form = UserForm.new(
+            :first_name => "Andy",
+            :contacts   => [ContactForm.new(:name => "Andy")]
+          )
 
           expect(form).to be_valid
           expect(form.contacts.first).to be_valid

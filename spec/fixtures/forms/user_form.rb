@@ -13,6 +13,8 @@ class UserForm < Rectify::Form
   attribute :other_id,    Integer
   attribute :last_login_date, String
 
+  validates :first_name, :presence => true
+
   def map_model(model)
     self.last_login_date = model.last_logged_in.strftime("%d/%m/%Y")
   end
