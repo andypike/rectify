@@ -2,6 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/github/andypike/rectify/badges/gpa.svg)](https://codeclimate.com/github/andypike/rectify)
 [![Build Status](https://travis-ci.org/andypike/rectify.svg?branch=master)](https://travis-ci.org/andypike/rectify)
+[![Gem Version](https://badge.fury.io/rb/rectify.svg)](https://badge.fury.io/rb/rectify)
 
 Rectify is a gem that provides some lightweight classes that will make it easier
 to build Rails applications in a more maintainable way. It's built on top of
