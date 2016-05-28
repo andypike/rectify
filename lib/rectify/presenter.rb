@@ -21,7 +21,9 @@ module Rectify
 
     private
 
-    attr_reader :controller
+    def controller
+      @controller ||= ActionController::Base.new
+    end
 
     def view_context
       @view_context ||= begin

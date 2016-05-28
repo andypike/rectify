@@ -38,10 +38,10 @@ RSpec.describe Rectify::Presenter do
     end
 
     context "when a controller is not supplied" do
-      it "raises a NoMethodError exeception" do
+      it "uses ActionController::Base as a fallback for view helpers" do
         presenter = SimplePresenter.new(:first_name => "Andy")
 
-        expect { presenter.edit_link }.to raise_error(NoMethodError)
+        expect(presenter.edit_link).to be_present
       end
     end
   end
