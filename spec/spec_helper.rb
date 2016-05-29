@@ -2,7 +2,6 @@ require File.expand_path("../../lib/rectify", __FILE__)
 require File.expand_path("../../lib/rectify/rspec", __FILE__)
 
 require "rspec/collection_matchers"
-require "wisper/rspec/matchers"
 require "awesome_print"
 require "pry"
 require "action_controller"

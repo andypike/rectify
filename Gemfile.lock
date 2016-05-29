@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/krisleech/wisper-rspec.git
+  revision: ba039c6f717008cba378253a0ee254fcafdee276
+  ref: ba039c6f
+  specs:
+    wisper-rspec (0.0.2)
+
 PATH
   remote: .
   specs:
@@ -104,7 +111,6 @@ GEM
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
     wisper (1.6.1)
-    wisper-rspec (0.0.2)
 
 PLATFORMS
   ruby
@@ -118,7 +124,7 @@ DEPENDENCIES
   rspec (~> 3.4)
   rspec-collection_matchers (~> 1.1)
   sqlite3
-  wisper-rspec (~> 0.0.2)
+  wisper-rspec!
 
 BUNDLED WITH
    1.11.2
