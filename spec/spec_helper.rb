@@ -35,7 +35,6 @@ RSpec.configure do |config|
   config.backtrace_exclusion_patterns << /gems/
   config.order = "random"
 
-  config.include Wisper::RSpec::BroadcastMatcher
   config.include Rectify::RSpec::Helpers
 end
 
