@@ -4,3 +4,19 @@ engines:
     checks:
       Insecure Source:
         enabled: false
+  rubocop:
+    enabled: true
+  reek:
+    enabled: true
+  engines:
+    fixme:
+      enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+ratings:
+  paths:
+  - lib/**
+  - "**.rb"
