@@ -11,6 +11,8 @@ engines:
     checks:
       IrresponsibleModule/IrresponsibleModule:
         enabled: false
+      UncommunicativeName/UncommunicativeVariableName:
+        enabled: false
   fixme:
     enabled: true
   duplication:
