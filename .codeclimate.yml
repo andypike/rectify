@@ -8,9 +8,8 @@ engines:
     enabled: true
   reek:
     enabled: true
-  engines:
-    fixme:
-      enabled: true
+  fixme:
+    enabled: true
   duplication:
     enabled: true
     config:
