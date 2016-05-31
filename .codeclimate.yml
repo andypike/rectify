@@ -8,6 +8,9 @@ engines:
     enabled: true
   reek:
     enabled: true
+    checks:
+      IrresponsibleModule/IrresponsibleModule:
+        enabled: false
   fixme:
     enabled: true
   duplication:
