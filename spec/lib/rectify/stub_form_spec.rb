@@ -1,4 +1,19 @@
 RSpec.describe Rectify::StubForm do
+  describe "stub_form helper" do
+    it "returns a Rectify::StubForm" do
+      form = stub_form(:name => "Andy", :age => 38)
+
+      expect(form).to be_a(described_class)
+    end
+
+    it "matches the passed attributes" do
+      form = stub_form(:name => "Andy", :age => 38)
+
+      expect(form.name).to eq("Andy")
+      expect(form.age).to eq(38)
+    end
+  end
+
   describe "#valid?" do
     it "returns the true when true is passed in the constructor" do
       form = described_class.new(:valid? => true)
