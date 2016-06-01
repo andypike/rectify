@@ -103,7 +103,7 @@ and Presenters.
 
 ## Form Objects
 
-The role of the Form Object is to mange the input data for a given action. It
+The role of the Form Object is to manage the input data for a given action. It
 validates data and only allows whitelisted attributes (replacing the need for
 Strong Parameters). This is a departure from "The Rails Way" where the model
 contains the validations. Form Objects help to reduce the weight of your models
