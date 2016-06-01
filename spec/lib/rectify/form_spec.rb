@@ -200,6 +200,32 @@ RSpec.describe Rectify::Form do
     end
   end
 
+  describe ".from_json" do
+    it "populates attributes from a json string" do
+      json = <<-JSON
+        {
+          "first_name": "Andy",
+          "age": 38,
+          "address": {
+            "street": "1 High Street"
+          },
+          "contacts": [
+            { "name": "James" }
+          ]
+        }
+      JSON
+
+      form = UserForm.from_json(json)
+
+      expect(form).to have_attributes(
+        :first_name => "Andy",
+        :age => 38
+      )
+      expect(form.address.street).to eq("1 High Street")
+      expect(form.contacts.first.name).to eq("James")
+    end
+  end
+
   describe ".model_name" do
     it "allows a form to mimic a model" do
       expect(UserForm.model_name.name).to eq("User")

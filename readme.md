@@ -283,7 +283,7 @@ form.ip_address # => "1.2.3.4"
 
 **Model**
 
-The final way is to pass a Ruby object instance (which is normally an ActiveModel
+You can pass a Ruby object instance (which is normally an ActiveModel
 but can be any PORO) to the form to populate it's attribute values. This is useful
 when editing a model:
 
@@ -327,6 +327,30 @@ Rectify forms are designed to be lightweight representations of the data you
 want to collect or show in your forms, not something that is linked to a model.
 This allows you to create any form that you like which doesn't need to match the
 representation of the data in the database.
+
+**JSON**
+
+You can also populate a form object from a JSON string. Just pass it in to the
+`.from_json` class method and the form will be created with the attributes
+populated by matching names:
+
+```ruby
+json = <<-JSON
+  {
+    "first_name": "Andy",
+    "age": 38
+  }
+JSON
+
+form = UserForm.from_json(json)
+
+form.first_name # => "Andy"
+form.age        # => 38
+```
+
+Populating the form from JSON can be useful when dealing with API requests into
+your system. Which allows you to easily access data and perform validation if 
+required.
 
 ### Validations
 

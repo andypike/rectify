@@ -22,6 +22,10 @@ module Rectify
       Rectify::BuildFormFromModel.new(self, model).build
     end
 
+    def self.from_json(json)
+      from_params(JSON.parse(json))
+    end
+
     def self.mimic(model_name)
       @model_name = model_name.to_s.underscore.to_sym
     end
