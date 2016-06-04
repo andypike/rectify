@@ -4,17 +4,17 @@ RSpec.describe Rectify::Form do
       form = UserForm.new("first_name" => "Andy", "age" => 38)
 
       expect(form).to have_attributes(
-        :first_name => "Andy",
-        :age => 38
+        first_name: "Andy",
+        age: 38
       )
     end
 
     it "populates attributes from a symbol key hash" do
-      form = UserForm.new(:first_name => "Andy", :age => 38)
+      form = UserForm.new(first_name: "Andy", age: 38)
 
       expect(form).to have_attributes(
-        :first_name => "Andy",
-        :age => 38
+        first_name: "Andy",
+        age: 38
       )
     end
   end
@@ -47,9 +47,9 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect(form).to have_attributes(
-        :first_name => "Andy",
-        :age        => 38,
-        :colours    => %w(red blue green)
+        first_name: "Andy",
+        age: 38,
+        colours: %w(red blue green)
       )
     end
 
@@ -69,10 +69,10 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect(form.address).to have_attributes(
-        :street    => "1 High Street",
-        :town      => "Wimbledon",
-        :city      => "London",
-        :post_code => "SW19 1AB"
+        street: "1 High Street",
+        town: "Wimbledon",
+        city: "London",
+        post_code: "SW19 1AB"
       )
     end
 
@@ -94,14 +94,14 @@ RSpec.describe Rectify::Form do
       form = ChildForm.from_params(params)
 
       expect(form).to have_attributes(
-        :first_name => "Andy",
-        :age        => 38,
-        :school     => "Rutlish"
+        first_name: "Andy",
+        age: 38,
+        school: "Rutlish"
       )
     end
 
     it "populates attributes from additional context data" do
-      form = UserForm.from_params(params, :order_count => 10)
+      form = UserForm.from_params(params, order_count: 10)
 
       expect(form.order_count).to eq(10)
     end
@@ -148,18 +148,18 @@ RSpec.describe Rectify::Form do
   describe ".from_model" do
     let(:model) do
       User.new(
-        :first_name => "Andy",
-        :age        => 38,
-        :contacts   => [
-          Contact.new(:name => "James", :number => "12345")
+        first_name: "Andy",
+        age: 38,
+        contacts: [
+          Contact.new(name: "James", number: "12345")
         ],
-        :address => Address.new(
-          :street    => "1 High Street",
-          :town      => "Wimbledon",
-          :city      => "London",
-          :post_code => "SW19 1AB"
+        address: Address.new(
+          street: "1 High Street",
+          town: "Wimbledon",
+          city: "London",
+          post_code: "SW19 1AB"
         ),
-        :last_logged_in => DateTime.new(2016, 1, 30, 9, 30, 0)
+        last_logged_in: DateTime.new(2016, 1, 30, 9, 30, 0)
       )
     end
 
@@ -167,8 +167,8 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_model(model)
 
       expect(form).to have_attributes(
-        :first_name => "Andy",
-        :age => 38
+        first_name: "Andy",
+        age: 38
       )
     end
 
@@ -177,8 +177,8 @@ RSpec.describe Rectify::Form do
 
       expect(form.contacts).to have(1).item
       expect(form.contacts.first).to have_attributes(
-        :name   => "James",
-        :number => "12345"
+        name: "James",
+        number: "12345"
       )
     end
 
@@ -186,10 +186,10 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_model(model)
 
       expect(form.address).to have_attributes(
-        :street    => "1 High Street",
-        :town      => "Wimbledon",
-        :city      => "London",
-        :post_code => "SW19 1AB"
+        street: "1 High Street",
+        town: "Wimbledon",
+        city: "London",
+        post_code: "SW19 1AB"
       )
     end
 
@@ -218,8 +218,8 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_json(json)
 
       expect(form).to have_attributes(
-        :first_name => "Andy",
-        :age => 38
+        first_name: "Andy",
+        age: 38
       )
       expect(form.address.street).to eq("1 High Street")
       expect(form.contacts.first.name).to eq("James")
@@ -235,7 +235,7 @@ RSpec.describe Rectify::Form do
   describe "#persisted?" do
     context "when the form id is a number greater than zero" do
       it "returns true" do
-        form = UserForm.new(:id => 1)
+        form = UserForm.new(id: 1)
 
         expect(form).to be_persisted
       end
@@ -243,7 +243,7 @@ RSpec.describe Rectify::Form do
 
     context "when the form id is zero" do
       it "returns false" do
-        form = UserForm.new(:id => 0)
+        form = UserForm.new(id: 0)
 
         expect(form).not_to be_persisted
       end
@@ -251,7 +251,7 @@ RSpec.describe Rectify::Form do
 
     context "when the form id is less than zero" do
       it "returns false" do
-        form = UserForm.new(:id => -1)
+        form = UserForm.new(id: -1)
 
         expect(form).not_to be_persisted
       end
@@ -259,7 +259,7 @@ RSpec.describe Rectify::Form do
 
     context "when the form id is blank" do
       it "returns false" do
-        form = UserForm.new(:id => nil)
+        form = UserForm.new(id: nil)
 
         expect(form).not_to be_persisted
       end
@@ -268,16 +268,16 @@ RSpec.describe Rectify::Form do
 
   describe "#attributes" do
     it "returns a hash of attributes with their values excluding :id" do
-      form = OrderForm.new(:number => "12345", :id => 1)
+      form = OrderForm.new(number: "12345", id: 1)
 
-      expect(form.attributes).to eq(:number => "12345")
+      expect(form.attributes).to eq(number: "12345")
     end
   end
 
   context "when being used with a form builder" do
     describe "#to_key" do
       it "returns an array containing the id" do
-        form = UserForm.new(:id => 2)
+        form = UserForm.new(id: 2)
 
         expect(form.to_key).to eq([2])
       end
@@ -296,7 +296,7 @@ RSpec.describe Rectify::Form do
     describe "validating the form" do
       context "when the form has valid values" do
         it "returns true" do
-          form = RegistrationForm.new(:email => "me@here.com")
+          form = RegistrationForm.new(email: "me@here.com")
 
           expect(form).to be_valid
         end
@@ -304,7 +304,7 @@ RSpec.describe Rectify::Form do
 
       context "when the form has invalid values" do
         it "returns false" do
-          form = RegistrationForm.new(:email => "")
+          form = RegistrationForm.new(email: "")
 
           expect(form).not_to be_valid
         end
@@ -314,7 +314,7 @@ RSpec.describe Rectify::Form do
     describe "validating derived forms" do
       context "when the form and the super class are valid" do
         it "returns true" do
-          form = ChildForm.new(:school => "High School", :first_name => "Andy")
+          form = ChildForm.new(school: "High School", first_name: "Andy")
 
           expect(form).to be_valid
           expect(form.errors[:school]).not_to be_present
@@ -324,7 +324,7 @@ RSpec.describe Rectify::Form do
 
       context "when the form is valid but the super class is invalid" do
         it "returns false" do
-          form = ChildForm.new(:school => "High School", :first_name => "")
+          form = ChildForm.new(school: "High School", first_name: "")
 
           expect(form).not_to be_valid
           expect(form.errors[:school]).not_to be_present
@@ -334,7 +334,7 @@ RSpec.describe Rectify::Form do
 
       context "when the form and the super class are invalid" do
         it "returns false" do
-          form = ChildForm.new(:school => "", :first_name => "")
+          form = ChildForm.new(school: "", first_name: "")
 
           expect(form).not_to be_valid
           expect(form.errors[:school]).to be_present
@@ -347,7 +347,7 @@ RSpec.describe Rectify::Form do
       context "when the nested forms have valid values" do
         it "returns true" do
           form = SchoolForm.new(
-            :head => TeacherForm.new(:name => "me@here.com")
+            head: TeacherForm.new(name: "me@here.com")
           )
 
           expect(form).to be_valid
@@ -357,7 +357,7 @@ RSpec.describe Rectify::Form do
 
       context "when the nested forms have invalid values" do
         it "returns false" do
-          form = SchoolForm.new(:head => TeacherForm.new(:name => ""))
+          form = SchoolForm.new(head: TeacherForm.new(name: ""))
 
           expect(form).not_to be_valid
           expect(form.head).not_to be_valid
@@ -369,8 +369,8 @@ RSpec.describe Rectify::Form do
       context "when the array of forms has valid values" do
         it "returns true" do
           form = UserForm.new(
-            :first_name => "Andy",
-            :contacts   => [ContactForm.new(:name => "Andy")]
+            first_name: "Andy",
+            contacts: [ContactForm.new(name: "Andy")]
           )
 
           expect(form).to be_valid
@@ -380,7 +380,7 @@ RSpec.describe Rectify::Form do
 
       context "when the array of forms has invalid values" do
         it "returns false" do
-          form = UserForm.new(:contacts => [ContactForm.new(:name => "")])
+          form = UserForm.new(contacts: [ContactForm.new(name: "")])
 
           expect(form).not_to be_valid
           expect(form.contacts.first).not_to be_valid
@@ -391,13 +391,13 @@ RSpec.describe Rectify::Form do
 
   describe "#invalid?" do
     it "returns true when #valid? returns false" do
-      form = RegistrationForm.new(:email => "")
+      form = RegistrationForm.new(email: "")
 
       expect(form).to be_invalid
     end
 
     it "returns false when #valid? returns true" do
-      form = RegistrationForm.new(:email => "me@here.com")
+      form = RegistrationForm.new(email: "me@here.com")
 
       expect(form).not_to be_invalid
     end

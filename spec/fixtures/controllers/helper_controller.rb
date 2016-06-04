@@ -4,6 +4,6 @@ class HelperController < ActionController::Base
   private
 
   def current_user
-    { :name => "Andy" }
+    { name: "Andy" }
   end
 end

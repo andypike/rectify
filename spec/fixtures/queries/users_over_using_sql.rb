@@ -19,6 +19,6 @@ class UsersOverUsingSql < Rectify::Query
   end
 
   def params
-    { :age => @age }
+    { age: @age }
   end
 end

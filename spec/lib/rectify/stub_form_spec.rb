@@ -1,13 +1,13 @@
 RSpec.describe Rectify::StubForm do
   describe "stub_form helper" do
     it "returns a Rectify::StubForm" do
-      form = stub_form(:name => "Andy", :age => 38)
+      form = stub_form(name: "Andy", age: 38)
 
       expect(form).to be_a(described_class)
     end
 
     it "matches the passed attributes" do
-      form = stub_form(:name => "Andy", :age => 38)
+      form = stub_form(name: "Andy", age: 38)
 
       expect(form.name).to eq("Andy")
       expect(form.age).to eq(38)
@@ -38,36 +38,36 @@ RSpec.describe Rectify::StubForm do
 
   describe "#attributes" do
     it "turns a hash passed to the constructor to attributes" do
-      form = described_class.new(:name => "Andy", :age => 38)
+      form = described_class.new(name: "Andy", age: 38)
 
       expect(form.name).to eq("Andy")
       expect(form.age).to eq(38)
     end
 
     it "returns the attributes hash" do
-      form = described_class.new(:name => "Andy", :age => 38)
+      form = described_class.new(name: "Andy", age: 38)
 
-      expect(form.attributes).to eq(:name => "Andy", :age => 38)
+      expect(form.attributes).to eq(name: "Andy", age: 38)
     end
 
     it "allows assignment of attributes passed into the constructor" do
-      form = described_class.new(:name => "Andy", :age => 38)
+      form = described_class.new(name: "Andy", age: 38)
       form.name = "Fred"
 
       expect(form.name).to eq("Fred")
     end
 
     it "allows assignment of new attributes" do
-      form = described_class.new(:name => "Andy", :age => 38)
+      form = described_class.new(name: "Andy", age: 38)
       form.twitter = "andypike"
 
       expect(form.twitter).to eq("andypike")
     end
 
     it "doesn't return :valid?" do
-      form = described_class.new(:valid? => true, :name => "Andy", :age => 38)
+      form = described_class.new(:valid? => true, name: "Andy", age: 38)
 
-      expect(form.attributes).to eq(:name => "Andy", :age => 38)
+      expect(form.attributes).to eq(name: "Andy", age: 38)
     end
   end
 end
