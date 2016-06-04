@@ -233,7 +233,7 @@ You can use the constructor and pass it a hash of values:
 form = UserForm.new(:first_name => "Andy", :last_name => "Pike")
 ```
 
-**Prams hash**
+**Params hash**
 
 You can use the params hash that a Rails controller provides that contains all
 the data in the request:
