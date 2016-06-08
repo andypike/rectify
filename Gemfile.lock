@@ -9,11 +9,11 @@ PATH
   remote: .
   specs:
     rectify (0.6.0)
-      activemodel (>= 4.2.0)
-      activerecord (>= 4.2.0)
-      activesupport (>= 4.2.0)
+      activemodel (>= 4.1.0)
+      activerecord (>= 4.1.0)
+      activesupport (>= 4.1.0)
       virtus (~> 1.0.5)
-      wisper (~> 1.6.1)
+      wisper (>= 1.6.1)
 
 GEM
   remote: https://rubygems.org/
@@ -116,7 +116,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack (>= 4.2.0)
+  actionpack (>= 4.1.0)
   awesome_print (~> 1.6)
   pry (~> 0.10.3)
   rake
