@@ -20,11 +20,11 @@ module Rectify
       elsif eager? && other.eager?
         Rectify::Query.new(cached_query | other.cached_query)
       else
-        fail UnableToComposeQueries.new(self, other)
+        raise UnableToComposeQueries.new(self, other)
       end
     end
 
-    alias_method :merge, :|
+    alias merge |
 
     def count
       cached_query.count

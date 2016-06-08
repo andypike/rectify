@@ -1,5 +1,5 @@
 class ErrorCommand < Rectify::Command
   def call
-    fail "This command failed"
+    raise "This command failed"
   end
 end

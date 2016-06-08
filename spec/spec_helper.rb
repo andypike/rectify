@@ -26,7 +26,7 @@ RSpec.configure do |config|
   config.around(:each) do |test|
     ActiveRecord::Base.transaction do
       test.run
-      fail ActiveRecord::Rollback
+      raise ActiveRecord::Rollback
     end
   end
 

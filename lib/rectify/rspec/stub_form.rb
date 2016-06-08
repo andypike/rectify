@@ -1,6 +1,6 @@
 module Rectify
   class StubForm
-    attr_reader :attributes
+    attr_reader :attributes, :valid
 
     def initialize(attributes)
       @valid = attributes.fetch(:valid?, false)
@@ -8,7 +8,7 @@ module Rectify
     end
 
     def valid?
-      @valid
+      valid
     end
 
     def invalid?

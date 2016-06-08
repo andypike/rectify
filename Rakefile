@@ -28,7 +28,7 @@ end
 namespace :g do
   desc "Generate migration"
   task :migration do
-    name      = ARGV[1] || fail("Specify name: rake g:migration your_migration")
+    name      = ARGV[1] || raise("Specify name: rake g:migration name")
     timestamp = Time.now.strftime("%Y%m%d%H%M%S")
     folder    = "../spec/db/migrate"
     path      = File.expand_path("#{folder}/#{timestamp}_#{name}.rb", __FILE__)

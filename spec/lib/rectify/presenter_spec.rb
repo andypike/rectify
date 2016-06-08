@@ -31,7 +31,9 @@ RSpec.describe Rectify::Presenter do
       it "returns the presenter object" do
         presenter = SimplePresenter.new(:first_name => "Andy")
 
-        expect(presenter.attach_controller(EmptyController.new)).to eq(presenter)
+        expect(
+          presenter.attach_controller(EmptyController.new)
+        ).to eq(presenter)
       end
     end
 
