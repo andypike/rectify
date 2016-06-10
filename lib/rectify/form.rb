@@ -10,12 +10,27 @@ module Rectify
 
       attribute_names = attribute_set.map(&:name)
 
-      attributes = params_hash
+      attributes_hash = params_hash
         .fetch(mimicked_model_name, {})
         .merge(params_hash.slice(*attribute_names))
         .merge(additional_params)
 
-      new(attributes)
+      convert_indexed_hashes_to_arrays(attributes_hash)
+
+      new(attributes_hash)
+    end
+
+    def self.convert_indexed_hashes_to_arrays(attributes_hash)
+      array_attribute_names.each do |name|
+        attribute = attributes_hash[name]
+        next unless attribute.is_a?(Hash)
+
+        attributes_hash[name] = attribute.values
+      end
+    end
+
+    def self.array_attribute_names
+      attribute_set.select { |a| a.primitive == Array }.map { |a| a.name.to_s }
     end
 
     def self.from_model(model)
