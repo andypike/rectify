@@ -30,7 +30,13 @@ RSpec.describe Rectify::Command do
       @failure = true
     end
 
-    it "calls methods on the caller" do
+    def something_private
+      @private = true
+    end
+
+    private :something_private
+
+    it "calls public methods on the caller" do
       @success = false
       @failure = false
 
@@ -41,6 +47,16 @@ RSpec.describe Rectify::Command do
 
       expect(@success).to be(true)
       expect(@failure).to be(false)
+    end
+
+    it "calls private methods on the caller" do
+      @private = false
+
+      SuccessCommand.call do
+        on(:success) { something_private }
+      end
+
+      expect(@private).to be(true)
     end
   end
 end

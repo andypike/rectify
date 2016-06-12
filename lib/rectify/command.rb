@@ -18,7 +18,7 @@ module Rectify
     end
 
     def method_missing(method_name, *args, &block)
-      if @caller.respond_to?(method_name)
+      if @caller.respond_to?(method_name, true)
         @caller.send(method_name, *args, &block)
       else
         super
