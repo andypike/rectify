@@ -408,7 +408,7 @@ class RegisterAccount < Rectify::Command
     return broadcast(:invalid) if form.invalid?
 
     transaction do
-      creates_user
+      create_user
       notifiy_admins
       audit_event
       send_user_details_to_crm
@@ -421,7 +421,7 @@ class RegisterAccount < Rectify::Command
 
   attr_reader :form
 
-  def creates_user
+  def create_user
     # ...
   end
 
