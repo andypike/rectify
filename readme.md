@@ -13,7 +13,7 @@ proved to be successful.
 
 To install, add it to your `Gemfile`:
 
-```
+```ruby
 gem "rectify"
 ```
 
@@ -532,7 +532,7 @@ def create
 end
 ```
 
-```html
+```erb
 <!-- within the view: -->
 
 <p><%= @greeting %> <%= presenter.name %></p>
@@ -591,7 +591,7 @@ You need to call `#attach_controller` and pass it a controller instance which wi
 allow it access to the view helpers. You can then use the Presenter in your
 views as you would expect:
 
-```html
+```erb
 <p><%= @presenter.edit_link %></p>
 ```
 
@@ -613,7 +613,7 @@ end
 
 In your view, you can access this presenter using the `presenter` helper method:
 
-```html
+```erb
 <p><%= presenter.edit_link %></p>
 ```
 
@@ -633,7 +633,7 @@ end
 To access this Presenter in the view, just pass the Presenter key to the
 `presenter` method like so:
 
-```html
+```erb
 <p><%= presenter(:layout).login_link %></p>
 ```
 
@@ -1065,7 +1065,7 @@ specs with `bundle exec rspec`, the database will be created for you.
 There are some Rake tasks to help with the management of this test database
 using normal(ish) commands from Rails:
 
-```
+```sh
 rake db:migrate   # => Migrates the test database
 rake db:schema    # => Dumps database schema
 rake g:migration  # => Create a new migration file (use snake_case name)
