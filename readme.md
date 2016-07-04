@@ -11,6 +11,15 @@ several other gems and adds improved APIs to make things easier.
 Rectify is an extraction from a number of projects that use these techniques and
 proved to be successful.
 
+## Video
+
+In June 2016, I spoke at RubyC about Rectify and how it can be used to improve
+areas of your application. The full video and slides can be found here:
+
+[Building maintainable Rails apps - RubyC 2016](http://andypike.com/blog/conferences/rubyc-2016/)
+
+## Installation
+
 To install, add it to your `Gemfile`:
 
 ```
@@ -349,7 +358,7 @@ form.age        # => 38
 ```
 
 Populating the form from JSON can be useful when dealing with API requests into
-your system. Which allows you to easily access data and perform validation if 
+your system. Which allows you to easily access data and perform validation if
 required.
 
 ### Validations
