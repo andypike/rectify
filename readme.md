@@ -418,7 +418,7 @@ class RegisterAccount < Rectify::Command
 
     transaction do
       create_user
-      notifiy_admins
+      notify_admins
       audit_event
       send_user_details_to_crm
     end
@@ -434,7 +434,7 @@ class RegisterAccount < Rectify::Command
     # ...
   end
 
-  def notifiy_admins
+  def notify_admins
     # ...
   end
 
