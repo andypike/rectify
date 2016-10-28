@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    rectify (0.6.1)
+    rectify (0.7.0)
       activemodel (>= 4.1.0)
       activerecord (>= 4.1.0)
       activesupport (>= 4.1.0)
