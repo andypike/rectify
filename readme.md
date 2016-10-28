@@ -418,7 +418,7 @@ class RegisterAccount < Rectify::Command
 
     transaction do
       create_user
-      notifiy_admins
+      notify_admins
       audit_event
       send_user_details_to_crm
     end
@@ -434,7 +434,7 @@ class RegisterAccount < Rectify::Command
     # ...
   end
 
-  def notifiy_admins
+  def notify_admins
     # ...
   end
 
@@ -835,9 +835,7 @@ active_users_over_20 = ActiveUsers.new.merge(UsersOlderThan.new(20))
 active_users_over_20.count # => Returns number of active users over 20 years old
 ```
 
-If you have a long list of queries to compose, Rectify also comes with the class
-method `.merge` which takes multiple queries and combines them for you as if you
-used `|` (or `#merge`) on them all:
+The `.merge` class method of `Rectify::Query` accepts multiple `Rectify::Query` objects to union together.  This is the same as using the `|` operator on multiple `Rectify::Query` objects.
 
 ```ruby
 active_users_over_20 = Rectify::Query.merge(
@@ -848,9 +846,7 @@ active_users_over_20 = Rectify::Query.merge(
 active_users_over_20.count # => Returns number of active users over 20 years old
 ```
 
-If you don't those options for composing queries then the final option would be
-to pass in a query object to another in it's constructor and use it as the base
-scope:
+You can also pass a `Rectify::Query` object into the constructor of another `Rectify::Query` object to set it as the base scope.
 
 ```ruby
 class UsersOlderThan < Rectify::Query
