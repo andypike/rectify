@@ -70,6 +70,8 @@ module Rectify
     end
 
     def valid?(context = nil)
+      before_validation
+
       [super, form_attributes_valid?, arrays_attributes_valid?].all?
     end
 
@@ -93,6 +95,11 @@ module Rectify
       # Implement this in your form object for custom mapping from model to form
       # object as part of the `.from_model` call after matching attributes are
       # populated (optional).
+    end
+
+    def before_validation
+      # Implement this in your form object if you would like to perform some
+      # some processing before validation happens (optional).
     end
 
     private

@@ -333,6 +333,15 @@ RSpec.describe Rectify::Form do
       end
     end
 
+    describe "#before_validation" do
+      it "calls #before_validation before validations are run" do
+        form = BeforeValidationForm.new(:email => "")
+
+        expect(form).to be_valid
+        expect(form.email).to eq("default@here.com")
+      end
+    end
+
     describe "validating derived forms" do
       context "when the form and the super class are valid" do
         it "returns true" do
