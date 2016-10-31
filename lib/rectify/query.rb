@@ -52,6 +52,8 @@ module Rectify
       cached_query.to_a
     end
 
+    alias to_ary to_a
+
     def relation?
       cached_query.is_a?(ActiveRecord::Relation)
     end
