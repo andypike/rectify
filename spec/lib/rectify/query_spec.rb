@@ -60,6 +60,15 @@ RSpec.describe Rectify::Query do
       end
     end
 
+    describe "#to_ary" do
+      it "returns the objects as an array" do
+        a = User.create!(:first_name => "Amber", :age => 10)
+        m = User.create!(:first_name => "Megan", :age => 9)
+
+        expect(AllUsers.new.to_ary).to match_array([a, m])
+      end
+    end
+
     describe "#map" do
       it "returns the mapped collection" do
         User.create!(:first_name => "Amber", :age => 10)
@@ -216,6 +225,15 @@ RSpec.describe Rectify::Query do
       end
     end
 
+    describe "#to_ary" do
+      it "returns the objects as an array" do
+        a = User.create!(:first_name => "Amber", :age => 10)
+        m = User.create!(:first_name => "Megan", :age => 9)
+
+        expect(UsersOverUsingSql.new(0).to_ary).to match_array([a, m])
+      end
+    end
+
     describe "#map" do
       it "returns the mapped collection" do
         User.create!(:first_name => "Amber", :age => 10)
@@ -235,6 +253,7 @@ RSpec.describe Rectify::Query do
         query.exists?
         query.none?
         query.to_a
+        query.to_ary
       end.to make_database_queries_of(1)
     end
 
