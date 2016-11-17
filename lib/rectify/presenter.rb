@@ -26,9 +26,7 @@ module Rectify
     end
 
     def view_context
-      @view_context ||= begin
-        controller && controller.view_context
-      end
+      @view_context ||= controller.view_context
     end
   end
 end
