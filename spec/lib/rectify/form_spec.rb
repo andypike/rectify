@@ -433,4 +433,30 @@ RSpec.describe Rectify::Form do
       expect(form).not_to be_invalid
     end
   end
+
+  describe "#with_context" do
+    it "assigns a context hash and allows access in the form" do
+      form = UserForm.new(:first_name => "Andy")
+        .with_context(:account_id => 1)
+
+      expect(form.context.account_id).to eq(1)
+    end
+
+    it "assigns a context to nested forms" do
+      form = SchoolForm.new(
+        :head => TeacherForm.new(:name => "")
+      ).with_context(:account_id => 1)
+
+      expect(form.head.context.account_id).to eq(1)
+    end
+
+    it "assigns a context to array attribute child forms" do
+      form = UserForm.new(
+        :first_name => "Andy",
+        :contacts   => [ContactForm.new(:name => "Andy")]
+      ).with_context(:account_id => 1)
+
+      expect(form.contacts.first.context.account_id).to eq(1)
+    end
+  end
 end

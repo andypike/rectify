@@ -371,6 +371,61 @@ your form as well as any (deeply) nested form objects and array attributes that
 contain form objects. There is also an `#invalid?` method that returns the
 opposite of `#valid?`.
 
+### Deep Context
+
+It's sometimes useful to have some context within your form objects when performing
+validations or some other type of data manipulation of the input. For example, you
+might want to check that the current user owns a particular resource as part of your
+validations. You could add the current user as an additional contextual option as
+the example shows above. However, sometimes you need this context to be available
+at all levels within your form not just at the root form object. You might have nested
+forms or arrays of form objects and they all might need access to this context. As
+there is no link up the chain from child to parent forms, we need a way to supply
+some context and make it available to all child forms.
+
+You can do that using the `#with_context` method.
+
+```ruby
+form = UserForm.from_params(params).with_context(:user => current_user)
+```
+
+This allows us to access `#context` in any form, and use the information within
+it when we perform validations or other work:
+
+```ruby
+class PostForm < Rectify::Form
+  attribute :blog_id, Integer
+  attribute :title,   String
+  attribute :body,    String
+  attribute :tags,    Array[TagForm]
+
+  validate :check_blog_ownership
+
+  def check_blog_ownership
+    return if context.user.blogs.exists?(:id => blog_id)
+
+    errors.add(:blog_id, "not owned by this user")
+  end
+end
+
+class TagForm < Rectify::Form
+  attribute :name,        String
+  attribute :category_id, Integer
+
+  validate :check_category
+
+  def check_category
+    return if context.user.categories.exists?(:id => category_id)
+
+    errors.add(:category_id, "not a category for this user")
+  end
+end
+```
+
+The context is passed to all nested forms within a form object to make it easy
+to perform all the validations and data conversions you might need from within
+the form object without having to do this as part of the command.
+
 ### Strong Parameters
 
 Did you notice in the example above that there was no mention of Strong

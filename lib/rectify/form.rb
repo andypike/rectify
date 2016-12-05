@@ -3,6 +3,8 @@ module Rectify
     include Virtus.model
     include ActiveModel::Validations
 
+    attr_reader :context
+
     attribute :id, Integer
 
     def self.from_params(params, additional_params = {})
@@ -102,24 +104,48 @@ module Rectify
       # some processing before validation happens (optional).
     end
 
+    def with_context(new_context)
+      @context = if new_context.is_a?(Hash)
+                   OpenStruct.new(new_context)
+                 else
+                   new_context
+                 end
+
+      attributes_that_respond_to(:with_context)
+        .each { |f| f.with_context(context) }
+
+      array_attributes_that_respond_to(:with_context)
+        .each { |f| f.with_context(context) }
+
+      self
+    end
+
     private
 
     def form_attributes_valid?
-      attributes
-        .each_value
-        .select { |f| f.respond_to?(:valid?) }
+      attributes_that_respond_to(:valid?)
         .map(&:valid?)
         .all?
     end
 
     def arrays_attributes_valid?
+      array_attributes_that_respond_to(:valid?)
+        .map(&:valid?)
+        .all?
+    end
+
+    def attributes_that_respond_to(message)
+      attributes
+        .each_value
+        .select { |f| f.respond_to?(message) }
+    end
+
+    def array_attributes_that_respond_to(message)
       attributes
         .each_value
         .select { |a| a.is_a?(Array) }
         .flatten
-        .select { |f| f.respond_to?(:valid?) }
-        .map(&:valid?)
-        .all?
+        .select { |f| f.respond_to?(message) }
     end
   end
 end
