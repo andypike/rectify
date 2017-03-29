@@ -10,14 +10,16 @@ module Rectify
     def self.from_params(params, additional_params = {})
       params_hash = hash_from(params)
 
-      attribute_names = attribute_set.map(&:name)
-
       attributes_hash = params_hash
         .fetch(mimicked_model_name, {})
-        .merge(params_hash.slice(*attribute_names))
+        .merge(params_hash)
         .merge(additional_params)
 
-      new(FormatAttributesHash.new(attribute_set).format(attributes_hash))
+      formatted_attributes = FormatAttributesHash
+        .new(attribute_set)
+        .format(attributes_hash)
+
+      new(formatted_attributes)
     end
 
     def self.from_model(model)

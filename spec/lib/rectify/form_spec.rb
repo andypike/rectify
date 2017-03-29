@@ -90,15 +90,16 @@ RSpec.describe Rectify::Form do
 
     it "converts param keys with dashes to underscores" do
       params = ActionController::Parameters.new(
-        "id" => "1",
-        "user" => {
-          "first-name" => "Andy"
+        "first-name" => "Andy",
+        "address" => {
+          "post-code" => "SW19 1AB"
         }
       )
 
       form = UserForm.from_params(params)
 
       expect(form.first_name).to eq("Andy")
+      expect(form.address.post_code).to eq("SW19 1AB")
     end
 
     it "populates an indexed array of attributes" do
