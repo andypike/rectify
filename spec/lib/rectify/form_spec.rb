@@ -88,6 +88,19 @@ RSpec.describe Rectify::Form do
       expect(form.contacts[2].number).to eq("789")
     end
 
+    it "converts param keys with dashes to underscores" do
+      params = ActionController::Parameters.new(
+        "id" => "1",
+        "user" => {
+          "first-name" => "Andy"
+        }
+      )
+
+      form = UserForm.from_params(params)
+
+      expect(form.first_name).to eq("Andy")
+    end
+
     it "populates an indexed array of attributes" do
       params = ActionController::Parameters.new(
         "user" => {
@@ -134,36 +147,6 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect { form.some_extra_data }.to raise_error(NoMethodError)
-    end
-
-    context "when a model is explicitally mimicked" do
-      it "returns the matching model name" do
-        expect(ChildForm.model_name.name).to eq("User")
-      end
-    end
-
-    context "when a model is not explicitally mimicked" do
-      describe "#model_name" do
-        it "returns the class name minus the `Form` suffix" do
-          expect(OrderForm.model_name.name).to eq("Order")
-        end
-
-        it "returns the class name minus the `Form` suffix and namespace" do
-          expect(Inventory::ProductForm.model_name.name).to eq("Product")
-        end
-      end
-
-      it "uses the class name minus the `Form` suffix as the params key" do
-        order_params = {
-          "order" => {
-            "number" => "12345"
-          }
-        }
-
-        form = OrderForm.from_params(order_params)
-
-        expect(form.number).to eq("12345")
-      end
     end
   end
 
@@ -249,8 +232,32 @@ RSpec.describe Rectify::Form do
   end
 
   describe ".model_name" do
-    it "allows a form to mimic a model" do
-      expect(UserForm.model_name.name).to eq("User")
+    context "when a model is explicitally mimicked" do
+      it "returns the matching model name" do
+        expect(ChildForm.model_name.name).to eq("User")
+      end
+    end
+
+    context "when a model is not explicitally mimicked" do
+      it "returns the class name minus the `Form` suffix" do
+        expect(OrderForm.model_name.name).to eq("Order")
+      end
+
+      it "returns the class name minus the `Form` suffix and namespace" do
+        expect(Inventory::ProductForm.model_name.name).to eq("Product")
+      end
+    end
+
+    it "uses the class name minus the `Form` suffix as the params key" do
+      order_params = {
+        "order" => {
+          "number" => "12345"
+        }
+      }
+
+      form = OrderForm.from_params(order_params)
+
+      expect(form.number).to eq("12345")
     end
   end
 
@@ -293,6 +300,22 @@ RSpec.describe Rectify::Form do
       form = OrderForm.new(:number => "12345", :id => 1)
 
       expect(form.attributes).to eq(:number => "12345")
+    end
+  end
+
+  describe "#attributes_with_values" do
+    it "returns a hash of attributes where their values are non-nil" do
+      form = AddressForm.new(
+        :id        => 1,
+        :street    => "1 High Street",
+        :town      => nil,
+        :post_code => "GU1 2AB"
+      )
+
+      expect(form.attributes_with_values).to eq(
+        :street    => "1 High Street",
+        :post_code => "GU1 2AB"
+      )
     end
   end
 

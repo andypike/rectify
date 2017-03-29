@@ -19,7 +19,7 @@ module Rectify
 
       convert_indexed_hashes_to_arrays(attributes_hash)
 
-      new(attributes_hash)
+      new(FormatAttributesHash.new.format(attributes_hash))
     end
 
     def self.convert_indexed_hashes_to_arrays(attributes_hash)
@@ -91,6 +91,10 @@ module Rectify
 
     def attributes
       super.except(:id)
+    end
+
+    def attributes_with_values
+      attributes.reject { |attribute| public_send(attribute).nil? }
     end
 
     def map_model(model)
