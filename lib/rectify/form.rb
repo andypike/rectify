@@ -17,22 +17,7 @@ module Rectify
         .merge(params_hash.slice(*attribute_names))
         .merge(additional_params)
 
-      convert_indexed_hashes_to_arrays(attributes_hash)
-
-      new(FormatAttributesHash.new.format(attributes_hash))
-    end
-
-    def self.convert_indexed_hashes_to_arrays(attributes_hash)
-      array_attribute_names.each do |name|
-        attribute = attributes_hash[name]
-        next unless attribute.is_a?(Hash)
-
-        attributes_hash[name] = attribute.values
-      end
-    end
-
-    def self.array_attribute_names
-      attribute_set.select { |a| a.primitive == Array }.map { |a| a.name.to_s }
+      new(FormatAttributesHash.new(attribute_set).format(attributes_hash))
     end
 
     def self.from_model(model)
