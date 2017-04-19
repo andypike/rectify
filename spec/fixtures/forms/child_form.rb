@@ -5,5 +5,5 @@ class ChildForm < UserForm
 
   attribute :school, String
 
-  validates :school, :presence => true
+  validates :school, presence: true
 end

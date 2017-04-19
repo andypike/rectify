@@ -4,17 +4,17 @@ RSpec.describe Rectify::Presenter do
       presenter = SimplePresenter.new("first_name" => "Andy", "age" => 38)
 
       expect(presenter).to have_attributes(
-        :first_name => "Andy",
-        :age => 38
+        first_name: "Andy",
+        age: 38
       )
     end
 
     it "populates attributes from a symbol key hash" do
-      presenter = SimplePresenter.new(:first_name => "Andy", :age => 38)
+      presenter = SimplePresenter.new(first_name: "Andy", age: 38)
 
       expect(presenter).to have_attributes(
-        :first_name => "Andy",
-        :age => 38
+        first_name: "Andy",
+        age: 38
       )
     end
   end
@@ -22,14 +22,14 @@ RSpec.describe Rectify::Presenter do
   describe "#attach_controller" do
     context "when a controller is supplied" do
       it "delegates view helper calls to `controller#view_context`" do
-        presenter = SimplePresenter.new(:first_name => "Andy")
+        presenter = SimplePresenter.new(first_name: "Andy")
         presenter.attach_controller(EmptyController.new)
 
         expect(presenter.edit_link).to eq('<a href="edit.html">Edit Andy</a>')
       end
 
       it "returns the presenter object" do
-        presenter = SimplePresenter.new(:first_name => "Andy")
+        presenter = SimplePresenter.new(first_name: "Andy")
 
         expect(
           presenter.attach_controller(EmptyController.new)
@@ -39,7 +39,7 @@ RSpec.describe Rectify::Presenter do
 
     context "when a controller is not supplied" do
       it "uses ActionController::Base as a fallback for view helpers" do
-        presenter = SimplePresenter.new(:first_name => "Andy")
+        presenter = SimplePresenter.new(first_name: "Andy")
 
         expect(presenter.edit_link).to be_present
       end
