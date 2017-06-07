@@ -56,7 +56,7 @@ RSpec.describe Rectify::Form do
     it "populates the id from a params hash" do
       form = UserForm.from_params(params)
 
-      expect(form.id).to eq(1)
+      expect(form.id).to eq('1')
     end
 
     it "populates other root level values from a params hash" do
@@ -271,23 +271,15 @@ RSpec.describe Rectify::Form do
       end
     end
 
-    context "when the form id is zero" do
-      it "returns false" do
-        form = UserForm.new(:id => 0)
-
-        expect(form).not_to be_persisted
-      end
-    end
-
-    context "when the form id is less than zero" do
-      it "returns false" do
-        form = UserForm.new(:id => -1)
-
-        expect(form).not_to be_persisted
-      end
-    end
-
     context "when the form id is blank" do
+      it "returns false" do
+        form = UserForm.new(:id => "")
+
+        expect(form).not_to be_persisted
+      end
+    end
+
+    context "when the form id is nil" do
       it "returns false" do
         form = UserForm.new(:id => nil)
 
@@ -325,7 +317,7 @@ RSpec.describe Rectify::Form do
       it "returns an array containing the id" do
         form = UserForm.new(:id => 2)
 
-        expect(form.to_key).to eq([2])
+        expect(form.to_key).to eq(['2'])
       end
     end
 
