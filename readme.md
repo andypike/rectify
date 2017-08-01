@@ -371,6 +371,43 @@ your form as well as any (deeply) nested form objects and array attributes that
 contain form objects. There is also an `#invalid?` method that returns the
 opposite of `#valid?`.
 
+The `#valid?` and `#invalid?` methods also take a set of options. These options allow
+you to not validate nested form objects or array attributes that contain form objects.
+For example:
+
+```ruby
+class UserForm < Rectify::Form
+  attribute :name,     String
+  attribute :address,  AddressForm
+  attribute :contacts, Array[ContactForm]
+
+  validates :name, :presence => true
+end
+
+class AddressForm < Rectify::Form
+  attribute :street,    String
+  attribute :town,      String
+  attribute :city,      String
+  attribute :post_code, String
+
+  validates :street, :post_code, :presence => true
+end
+
+class ContactForm < Rectify::Form
+  attribute :name,   String
+  attribute :number, String
+
+  validates :name, :presence => true
+end
+
+form = UserForm.from_params(params)
+
+form.valid?(:exclude_nested => true, :exclude_arrays => true)
+```
+
+In this case, the `UserForm` attributes will be validated (`name` in the example above)
+but the `address` and `contacts` will not be validated.
+
 ### Deep Context
 
 It's sometimes useful to have some context within your form objects when performing
@@ -1054,11 +1091,11 @@ application. Something like the following:
 └── app
     ├── controllers
     ├── core
-    │   ├── billing
-    │   ├── fulfillment
-    │   ├── ordering
-    │   ├── reporting
-    │   └── security
+    │   ├── billing
+    │   ├── fulfillment
+    │   ├── ordering
+    │   ├── reporting
+    │   └── security
     ├── models
     └── views
 ```

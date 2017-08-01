@@ -58,10 +58,21 @@ module Rectify
       id.present? && id.to_i > 0
     end
 
-    def valid?(context = nil)
+    def valid?(options = {})
       before_validation
 
-      [super, form_attributes_valid?, arrays_attributes_valid?].all?
+      options     = {} if options.blank?
+      context     = options[:context]
+      validations = [super(context)]
+
+      validations << form_attributes_valid? unless options[:exclude_nested]
+      validations << array_attributes_valid? unless options[:exclude_arrays]
+
+      validations.all?
+    end
+
+    def invalid?(options = {})
+      !valid?(options)
     end
 
     def to_key
@@ -119,7 +130,7 @@ module Rectify
         .all?
     end
 
-    def arrays_attributes_valid?
+    def array_attributes_valid?
       array_attributes_that_respond_to(:valid?)
         .map(&:valid?)
         .all?

@@ -418,6 +418,14 @@ RSpec.describe Rectify::Form do
           expect(form.head).not_to be_valid
         end
       end
+
+      context "when ignoring nested forms with invalid values" do
+        it "returns true" do
+          form = SchoolForm.new(:head => TeacherForm.new(:name => ""))
+
+          expect(form).to be_valid(:exclude_nested => true)
+        end
+      end
     end
 
     describe "validating array attributes containing forms" do
@@ -435,10 +443,24 @@ RSpec.describe Rectify::Form do
 
       context "when the array of forms has invalid values" do
         it "returns false" do
-          form = UserForm.new(:contacts => [ContactForm.new(:name => "")])
+          form = UserForm.new(
+            :first_name => "Andy",
+            :contacts => [ContactForm.new(:name => "")]
+          )
 
           expect(form).not_to be_valid
           expect(form.contacts.first).not_to be_valid
+        end
+      end
+
+      context "when ignoring narray of forms with invalid values" do
+        it "returns true" do
+          form = UserForm.new(
+            :first_name => "Andy",
+            :contacts => [ContactForm.new(:name => "")]
+          )
+
+          expect(form).to be_valid(:exclude_arrays => true)
         end
       end
     end
