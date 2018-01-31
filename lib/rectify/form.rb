@@ -9,9 +9,7 @@ module Rectify
 
     def self.from_params(params, additional_params = {})
       params_hash = hash_from(params)
-
-      mimicked_params = params_hash[mimicked_model_name]
-      mimicked_params = {} unless mimicked_params.is_a?(Hash)
+      mimicked_params = ensure_hash(params_hash[mimicked_model_name])
 
       attributes_hash = params_hash
         .merge(mimicked_params)
@@ -54,6 +52,14 @@ module Rectify
     def self.hash_from(params)
       params = params.to_unsafe_h if params.respond_to?(:to_unsafe_h)
       params.with_indifferent_access
+    end
+
+    def self.ensure_hash(object)
+      if object.is_a?(Hash)
+        object
+      else
+        {}
+      end
     end
 
     def persisted?
