@@ -4,6 +4,7 @@ require_relative "contact_form"
 class UserForm < Rectify::Form
   mimic :user
 
+  attribute :user,        String
   attribute :first_name,  String
   attribute :age,         Integer
   attribute :colours,     Array

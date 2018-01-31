@@ -10,9 +10,11 @@ module Rectify
     def self.from_params(params, additional_params = {})
       params_hash = hash_from(params)
 
+      mimicked_params = params_hash[mimicked_model_name]
+      mimicked_params = {} unless mimicked_params.is_a?(Hash)
+
       attributes_hash = params_hash
-        .fetch(mimicked_model_name, {})
-        .merge(params_hash)
+        .merge(mimicked_params)
         .merge(additional_params)
 
       formatted_attributes = FormatAttributesHash
