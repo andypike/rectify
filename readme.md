@@ -609,6 +609,29 @@ When an event is handled, the appropriate block is called in the context of the
 controller. Basically, any method call within the block is delegated back to the
 controller.
 
+As well as capturing events in a block, the command will also return a hash of the
+broadcast events together with any parameters that were passed. For example:
+
+```ruby
+events = RegisterAccount.call(form)
+
+events  # => { :ok => user }
+```
+
+There will be a key for each event broadcast and its value will be the parameters
+passed. If there is a single parameter it will be the value. If there are no
+parameters or many, the hash value for the event key will be an array of the parameters:
+
+```ruby
+events = RegisterAccount.call(form)
+
+events  # => {
+        #      :ok       => user,
+        #      :messages => ["User registered", "Email sent", "Account ready"],
+        #      :next     => []
+        #    }
+```
+
 You may occasionally want to expose a value within a handler block to the view.
 You do this via the `expose` method within the handler block. If you want to
 use `expose` then you must include the `Rectify::ControllerHelpers` module in

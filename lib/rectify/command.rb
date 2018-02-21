@@ -1,11 +1,33 @@
 module Rectify
+  class EventRecorder
+    attr_reader :events
+
+    def initialize
+      @events = {}
+    end
+
+    def method_missing(method_name, *args, &_block)
+      args = args.first if args.size == 1
+      @events[method_name] = args
+    end
+
+    def respond_to_missing?(_method_name, _include_private = false)
+      true
+    end
+  end
+
   class Command
     include Wisper::Publisher
 
     def self.call(*args, &block)
+      event_recorder = EventRecorder.new
+
       command = new(*args)
+      command.subscribe(event_recorder)
       command.evaluate(&block) if block_given?
       command.call
+
+      event_recorder.events
     end
 
     def evaluate(&block)

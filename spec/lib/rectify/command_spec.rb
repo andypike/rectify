@@ -9,6 +9,28 @@ RSpec.describe Rectify::Command do
 
         NoArgsCommand.call
       end
+
+      it "returns broadcast events with their result (single)" do
+        events = ReturnSingleResultCommand.call
+
+        expect(events).to eq(:ok => "This is a result")
+      end
+
+      it "returns broadcast events with their result (multiple)" do
+        events = ReturnMultiResultCommand.call
+
+        expect(events).to eq(:ok => [1, 2, 3])
+      end
+
+      it "returns broadcast all events with their result" do
+        events = ReturnMultiEventMultiResultCommand.call
+
+        expect(events).to eq(
+          :ok        => [1, 2, 3],
+          :published => "The command works",
+          :next      => []
+        )
+      end
     end
 
     context "with arguments" do
