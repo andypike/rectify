@@ -4,7 +4,7 @@ require "yaml"
 require "active_record"
 
 namespace :db do
-  db_config = YAML.load(File.open("spec/config/database.yml"))
+  db_config = YAML.safe_load(File.open("spec/config/database.yml"))
 
   desc "Migrate the database"
   task :migrate do
@@ -36,12 +36,12 @@ namespace :g do
     migration_class = name.split("_").map(&:capitalize).join
 
     File.open(path, "w") do |file|
-      file.write <<-EOF.strip_heredoc
+      file.write <<-MIGRATION.strip_heredoc
         class #{migration_class} < ActiveRecord::Migration
           def change
           end
         end
-      EOF
+      MIGRATION
     end
 
     puts "Migration #{path} created"

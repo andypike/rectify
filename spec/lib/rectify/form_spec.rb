@@ -27,7 +27,7 @@ RSpec.describe Rectify::Form do
         "user" => {
           "first_name" => "Andy",
           "age"        => "38",
-          "colours"    => %w(red blue green),
+          "colours"    => %w[red blue green],
           "address" => {
             "street"    => "1 High Street",
             "town"      => "Wimbledon",
@@ -49,7 +49,7 @@ RSpec.describe Rectify::Form do
       expect(form).to have_attributes(
         :first_name => "Andy",
         :age        => 38,
-        :colours    => %w(red blue green)
+        :colours    => %w[red blue green]
       )
     end
 
@@ -165,7 +165,7 @@ RSpec.describe Rectify::Form do
           :city      => "London",
           :post_code => "SW19 1AB"
         ),
-        :last_logged_in => DateTime.new(2016, 1, 30, 9, 30, 0)
+        :last_logged_in => Time.new(2016, 1, 30, 9, 30, 0)
       )
     end
 

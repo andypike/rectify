@@ -12,14 +12,23 @@ Style/HashSyntax:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
-Style/AlignParameters:
+Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
 
-Style/MultilineMethodCallIndentation:
+Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
-Style/IndentationWidth:
-  Width: 2
+Layout/IndentationWidth:
+  Width: 2  
+
+Metrics/ClassLength:
+  Max: 110
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'

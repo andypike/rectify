@@ -84,10 +84,10 @@ RSpec.describe Rectify::Query do
         User.create!(:first_name => "Fred", :age => 11, :active => false)
         andy = User.create!(:first_name => "Andy", :age => 38)
 
-        active_users_over_10 = ActiveUsers.new | UsersOver.new(10)
+        active_users_over10 = ActiveUsers.new | UsersOver.new(10)
 
-        expect(active_users_over_10.count).to eq(1)
-        expect(active_users_over_10.first).to eq(andy)
+        expect(active_users_over10.count).to eq(1)
+        expect(active_users_over10.first).to eq(andy)
       end
 
       it "returns the combination of three queries" do
@@ -119,10 +119,10 @@ RSpec.describe Rectify::Query do
         User.create!(:first_name => "Fred", :age => 11, :active => false)
         andy = User.create!(:first_name => "Andy", :age => 38)
 
-        active_users_over_10 = ActiveUsers.new.merge(UsersOver.new(10))
+        active_users_over10 = ActiveUsers.new.merge(UsersOver.new(10))
 
-        expect(active_users_over_10.count).to eq(1)
-        expect(active_users_over_10.first).to eq(andy)
+        expect(active_users_over10.count).to eq(1)
+        expect(active_users_over10.first).to eq(andy)
       end
     end
 
@@ -148,14 +148,14 @@ RSpec.describe Rectify::Query do
           User.create!(:first_name => "Grandad", :age => 65)
           andy = User.create!(:first_name => "Andy", :age => 38)
 
-          active_users_between_10_and_45 = described_class.merge(
+          active_users_between_10_and45 = described_class.merge(
             ActiveUsers.new,
             UsersOver.new(10),
             UsersUnder.new(45)
           )
 
-          expect(active_users_between_10_and_45.count).to eq(1)
-          expect(active_users_between_10_and_45.first).to eq(andy)
+          expect(active_users_between_10_and45.count).to eq(1)
+          expect(active_users_between_10_and45.first).to eq(andy)
         end
       end
     end
