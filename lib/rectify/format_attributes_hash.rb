@@ -37,7 +37,7 @@ module Rectify
     end
 
     def array_attributes
-      attribute_set.select { |a| a.primitive == Array }
+      attribute_set.select { |attribute| attribute.primitive == Array }
     end
 
     def convert_hash_keys(value)
