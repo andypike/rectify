@@ -18,7 +18,7 @@ module Rectify
 
     private
 
-    attr_reader :form_class, :form, :model
+    attr_reader :form_class, :model
 
     def form
       @form ||= form_class.new
