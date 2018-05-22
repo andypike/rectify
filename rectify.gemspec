@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "actionpack",    ">= 4.1.0"
   s.add_development_dependency "awesome_print", "~> 1.6"
-  s.add_development_dependency "pry",           "~> 0.10.3"
+  s.add_development_dependency "pry",           "~> 0.11.3"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.4"
   s.add_development_dependency "rspec-collection_matchers", "~> 1.1"

@@ -28,6 +28,7 @@ RSpec.describe Rectify::Form do
           "first_name" => "Andy",
           "age"        => "38",
           "colours"    => %w[red blue green],
+          "file"       => ActionDispatch::Http::UploadedFile.new(:tempfile => Tempfile.new("file")),
           "address" => {
             "street"    => "1 High Street",
             "town"      => "Wimbledon",
@@ -140,6 +141,12 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params, :order_count => 10)
 
       expect(form.order_count).to eq(10)
+    end
+
+    it "populates uploaded file attributes" do
+      form = FileUploadForm.from_params(params)
+
+      expect(form.file).to be_present
     end
 
     it "doesn't create attributes for param data not defined in the form" do
