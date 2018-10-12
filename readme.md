@@ -473,6 +473,27 @@ other data in your params hash is ignored.
 Take a look at [Virtus](https://github.com/solnic/virtus) for more information
 about how to build a form object.
 
+### I18n
+
+Regarding internationalization, the main affected classes when coercing are `Date` and `Time` classes. This is coercing Strings into `Date`, `DateTime` and `Time`. Texts don't usually need to be coerced as they are simple String attributes with nothing special in them.
+
+When coercing dates and times in a multi-language application, each locale will have its own date and time formats, and these formats should be taken into account when coercing strings (inputs entered by the user, or comming form external sources).
+
+So for `Date`, `DateTime` and `Time` classes, Rectify does not support I18n by default. But there are some ways to achieve it indirectly.
+
+Probably the best is to define custom `Virtus::Attribute`s for each kind of temporal class. For exmaple:
+
+```ruby
+class LocalizedDate < Virtus::Attribute
+  def coerce(value)
+    return value unless value.is_a?(String)
+    Date.strptime(value, I18n.t("date.formats.short"))
+  rescue ArgumentError
+    nil
+  end
+end
+```
+
 ## Commands
 
 Commands (also known as Service Objects) are the home of your business logic.
