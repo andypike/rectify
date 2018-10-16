@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "awesome_print", "~> 1.6"
   s.add_development_dependency "pry",           "~> 0.11.3"
   s.add_development_dependency "rake"
-  s.add_development_dependency "rspec", "~> 3.4"
+  s.add_development_dependency "rspec", "~> 3.8"
   s.add_development_dependency "rspec-collection_matchers", "~> 1.1"
   s.add_development_dependency "rubocop"
   s.add_development_dependency "sqlite3"
