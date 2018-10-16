@@ -1,18 +1,24 @@
 RSpec.describe Rectify::Form do
   describe ".new" do
     it "populates attributes from a string key hash" do
-      form = UserForm.new("first_name" => "Andy", "age" => 38)
+      form = UserForm.new(
+        "user" => "andy38",
+        "first_name" => "Andy",
+        "age" => 38
+      )
 
       expect(form).to have_attributes(
+        :user       => "andy38",
         :first_name => "Andy",
         :age => 38
       )
     end
 
     it "populates attributes from a symbol key hash" do
-      form = UserForm.new(:first_name => "Andy", :age => 38)
+      form = UserForm.new(:user => "andy38", :first_name => "Andy", :age => 38)
 
       expect(form).to have_attributes(
+        :user       => "andy38",
         :first_name => "Andy",
         :age => 38
       )
@@ -25,6 +31,7 @@ RSpec.describe Rectify::Form do
         "id"       => "1",
         "other_id" => "2",
         "user" => {
+          "user"       => "andy38",
           "first_name" => "Andy",
           "age"        => "38",
           "colours"    => %w[red blue green],
@@ -48,6 +55,7 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect(form).to have_attributes(
+        :user       => "andy38",
         :first_name => "Andy",
         :age        => 38,
         :colours    => %w[red blue green]
@@ -161,6 +169,7 @@ RSpec.describe Rectify::Form do
       form = ChildForm.from_params(params)
 
       expect(form).to have_attributes(
+        :user       => "andy38",
         :first_name => "Andy",
         :age        => 38,
         :school     => "Rutlish"
@@ -191,6 +200,7 @@ RSpec.describe Rectify::Form do
   describe ".from_model" do
     let(:model) do
       User.new(
+        :user       => "andy38",
         :first_name => "Andy",
         :age        => 38,
         :contacts   => [
@@ -210,6 +220,7 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_model(model)
 
       expect(form).to have_attributes(
+        :user       => "andy38",
         :first_name => "Andy",
         :age => 38
       )
@@ -247,6 +258,7 @@ RSpec.describe Rectify::Form do
     it "populates attributes from a json string" do
       json = <<-JSON
         {
+          "user": "andy38",
           "first_name": "Andy",
           "age": 38,
           "address": {
@@ -261,6 +273,7 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_json(json)
 
       expect(form).to have_attributes(
+        :user       => "andy38",
         :first_name => "Andy",
         :age => 38
       )
