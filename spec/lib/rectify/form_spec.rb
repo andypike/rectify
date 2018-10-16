@@ -125,6 +125,36 @@ RSpec.describe Rectify::Form do
       expect(form.contacts[2].number).to eq("789")
     end
 
+    it "populates nested indexed arrays of attributes" do
+      params = ActionController::Parameters.new(
+        "user" => {
+          "contacts" => {
+            "0" => {
+              "name" => "Amber",
+              "number" => "123",
+              "phones" => {
+                "0" => { "number" => "111111111", "country_code" => "+34" },
+                "1" => { "number" => "222222222", "country_code" => "+34" }
+              }
+            },
+            "1" => { "name" => "Megan", "number" => "456" }
+          }
+        }
+      )
+
+      form = UserForm.from_params(params)
+
+      expect(form.contacts).to have(2).items
+      expect(form.contacts[0].name).to eq("Amber")
+      expect(form.contacts[0].number).to eq("123")
+      expect(form.contacts[0].phones[0].number).to eq("111111111")
+      expect(form.contacts[0].phones[0].country_code).to eq("+34")
+      expect(form.contacts[0].phones[1].number).to eq("222222222")
+      expect(form.contacts[0].phones[1].country_code).to eq("+34")
+      expect(form.contacts[1].name).to eq("Megan")
+      expect(form.contacts[1].number).to eq("456")
+    end
+
     it "populates a derived form" do
       params["user"]["school"] = "Rutlish"
 
