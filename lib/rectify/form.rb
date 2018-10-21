@@ -5,7 +5,7 @@ module Rectify
 
     attr_reader :context
 
-    attribute :id, Integer
+    attribute :id, String
 
     def self.from_params(params, additional_params = {})
       params_hash = hash_from(params)
@@ -63,7 +63,11 @@ module Rectify
     end
 
     def persisted?
-      id.present? && id.to_i > 0
+      id.present?
+    end
+
+    def new_record?
+      id.blank?
     end
 
     def valid?(options = {})
