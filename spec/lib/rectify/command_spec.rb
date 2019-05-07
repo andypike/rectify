@@ -26,9 +26,9 @@ RSpec.describe Rectify::Command do
         events = ReturnMultiEventMultiResultCommand.call
 
         expect(events).to eq(
-          :ok        => [1, 2, 3],
+          :ok => [1, 2, 3],
           :published => "The command works",
-          :next      => []
+          :next => []
         )
       end
     end
@@ -56,7 +56,7 @@ RSpec.describe Rectify::Command do
       @private = true
     end
 
-    private :something_private
+    private :something_private # rubocop:disable Style/AccessModifierDeclarations
 
     it "calls public methods on the caller" do
       @success = false

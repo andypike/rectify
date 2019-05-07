@@ -17,7 +17,7 @@ module Rectify
         ^SAVEPOINT|
         ^SHOW|
         ^PRAGMA
-      /xi
+      /xi.freeze
 
       def self.enable
         ::RSpec.configure do |config|

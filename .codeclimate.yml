@@ -6,6 +6,7 @@ engines:
         enabled: false
   rubocop:
     enabled: true
+    channel: rubocop-0-67
   reek:
     enabled: true
     checks:

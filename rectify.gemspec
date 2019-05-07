@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.8"
   s.add_development_dependency "rspec-collection_matchers", "~> 1.1"
-  s.add_development_dependency "rubocop"
+  s.add_development_dependency "rubocop", "~> 0.67.2"
+  s.add_development_dependency "rubocop-performance"
   s.add_development_dependency "sqlite3"
 end
