@@ -7,7 +7,8 @@ module Rectify
     end
 
     def format(params)
-      convert_indexed_hashes_to_arrays(params)
+      convert_indexed_hashes_to_arrays_for_nested_attributes(params)
+      convert_indexed_hashes_to_arrays_for_array_attributes(params)
       convert_hash_keys(params)
     end
 
@@ -15,7 +16,7 @@ module Rectify
 
     attr_reader :attribute_set
 
-    def convert_indexed_hashes_to_arrays(attributes_hash)
+    def convert_indexed_hashes_to_arrays_for_array_attributes(attributes_hash)
       array_attributes.each do |array_attribute|
         name = array_attribute.name
         attribute = attributes_hash[name]
@@ -28,12 +29,27 @@ module Rectify
       end
     end
 
+    def convert_indexed_hashes_to_arrays_for_nested_attributes(attributes_hash)
+      nested_attributes.each do |nested_form_attribute|
+        name = nested_form_attribute.name
+        attribute = attributes_hash[name]
+        next unless attribute.is_a?(Hash)
+
+        attributes_hash[name] =
+          self.class.new(nested_form_attribute.primitive.attribute_set).format(attribute)
+      end
+    end
+
     def transform_values_for_type(values, element_type)
       return values unless element_type < Rectify::Form
 
       values.map do |value|
         self.class.new(element_type.attribute_set).format(value)
       end
+    end
+
+    def nested_attributes
+      attribute_set.select { |attribute| attribute.primitive < ::Rectify::Form }
     end
 
     def array_attributes
