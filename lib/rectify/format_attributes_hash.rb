@@ -2,12 +2,14 @@
 
 module Rectify
   class FormatAttributesHash
+    include NestedFormHelpers
+
     def initialize(attribute_set)
       @attribute_set = attribute_set
     end
 
     def format(params)
-      convert_indexed_hashes_to_arrays_for_nested_form_attributes(params)
+      convert_indexed_hashes_to_arrays_for_nested_attributes(params)
       convert_indexed_hashes_to_arrays_for_array_attributes(params)
       convert_hash_keys(params)
     end
@@ -29,8 +31,8 @@ module Rectify
       end
     end
 
-    def convert_indexed_hashes_to_arrays_for_nested_form_attributes(attributes_hash)
-      nested_form_attributes.each do |nested_form_attribute|
+    def convert_indexed_hashes_to_arrays_for_nested_attributes(attributes_hash)
+      nested_attributes.each do |nested_form_attribute|
         name = nested_form_attribute.name
         attribute = attributes_hash[name]
         next unless attribute.is_a?(Hash)
@@ -46,14 +48,6 @@ module Rectify
       values.map do |value|
         self.class.new(element_type.attribute_set).format(value)
       end
-    end
-
-    def nested_form_attributes
-      attribute_set.select { |attribute| attribute.primitive < ::Rectify::Form }
-    end
-
-    def array_attributes
-      attribute_set.select { |attribute| attribute.primitive == Array }
     end
 
     def convert_hash_keys(value)

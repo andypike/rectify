@@ -7,6 +7,7 @@ require "active_model"
 require "active_record"
 
 require "rectify/version"
+require "rectify/nested_form_helpers"
 require "rectify/form"
 require "rectify/form_attribute"
 require "rectify/format_attributes_hash"

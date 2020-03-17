@@ -419,6 +419,10 @@ RSpec.describe Rectify::Form do
           form = RegistrationForm.new(:email => "me@here.com")
 
           expect(form).to be_valid
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
         end
       end
 
@@ -427,6 +431,10 @@ RSpec.describe Rectify::Form do
           form = RegistrationForm.new(:email => "")
 
           expect(form).not_to be_valid
+          expect(form.errors).to have_attributes(
+            :messages => { :email => ["can't be blank"] },
+            :details => { :email => [{ :error => :blank }] }
+          )
         end
       end
     end
@@ -436,6 +444,10 @@ RSpec.describe Rectify::Form do
         form = BeforeValidationForm.new(:email => "")
 
         expect(form).to be_valid
+        expect(form.errors).to have_attributes(
+          :messages => {},
+          :details => {}
+        )
         expect(form.email).to eq("default@here.com")
       end
     end
@@ -446,8 +458,10 @@ RSpec.describe Rectify::Form do
           form = ChildForm.new(:school => "High School", :first_name => "Andy")
 
           expect(form).to be_valid
-          expect(form.errors[:school]).not_to be_present
-          expect(form.errors[:first_name]).not_to be_present
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
         end
       end
 
@@ -456,8 +470,10 @@ RSpec.describe Rectify::Form do
           form = ChildForm.new(:school => "High School", :first_name => "")
 
           expect(form).not_to be_valid
-          expect(form.errors[:school]).not_to be_present
-          expect(form.errors[:first_name]).to be_present
+          expect(form.errors).to have_attributes(
+            :messages => { :first_name => ["can't be blank"] },
+            :details => { :first_name => [{ :error => :blank }] }
+          )
         end
       end
 
@@ -466,8 +482,10 @@ RSpec.describe Rectify::Form do
           form = ChildForm.new(:school => "", :first_name => "")
 
           expect(form).not_to be_valid
-          expect(form.errors[:school]).to be_present
-          expect(form.errors[:first_name]).to be_present
+          expect(form.errors).to have_attributes(
+            :messages => { :first_name => ["can't be blank"], :school => ["can't be blank"] },
+            :details => { :first_name => [{ :error => :blank }], :school => [{ :error => :blank }] }
+          )
         end
       end
     end
@@ -480,7 +498,15 @@ RSpec.describe Rectify::Form do
           )
 
           expect(form).to be_valid
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
           expect(form.head).to be_valid
+          expect(form.head.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
         end
       end
 
@@ -489,7 +515,15 @@ RSpec.describe Rectify::Form do
           form = SchoolForm.new(:head => TeacherForm.new(:name => ""))
 
           expect(form).not_to be_valid
+          expect(form.errors).to have_attributes(
+            :messages => { :"head.name" => ["can't be blank"] },
+            :details => { :"head.name" => [{ :error => :blank }] }
+          )
           expect(form.head).not_to be_valid
+          expect(form.head.errors).to have_attributes(
+            :messages => { :name => ["can't be blank"] },
+            :details => { :name => [{ :error => :blank }] }
+          )
         end
       end
 
@@ -498,6 +532,10 @@ RSpec.describe Rectify::Form do
           form = SchoolForm.new(:head => TeacherForm.new(:name => ""))
 
           expect(form).to be_valid(:exclude_nested => true)
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
         end
       end
     end
@@ -511,19 +549,58 @@ RSpec.describe Rectify::Form do
           )
 
           expect(form).to be_valid
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
           expect(form.contacts.first).to be_valid
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
         end
       end
 
       context "when the array of forms has invalid values" do
-        it "returns false" do
-          form = UserForm.new(
-            :first_name => "Andy",
-            :contacts => [ContactForm.new(:name => "")]
-          )
+        context "without indexed errors" do
+          it "returns false" do
+            form = UserForm.new(
+              :first_name => "Andy",
+              :contacts => [ContactForm.new(:name => "")]
+            )
 
-          expect(form).not_to be_valid
-          expect(form.contacts.first).not_to be_valid
+            expect(form).not_to be_valid
+            expect(form.errors).to have_attributes(
+              :messages => { :"contacts.name" => ["can't be blank"] },
+              :details => { :"contacts.name" => [{ :error => :blank }] }
+            )
+            expect(form.contacts.first).not_to be_valid
+            expect(form.contacts.first.errors).to have_attributes(
+              :messages => { :name => ["can't be blank"] },
+              :details => { :name => [{ :error => :blank }] }
+            )
+          end
+        end
+
+        context "with indexed errors" do
+          it "returns false" do
+            form = UserForm.new(
+              :first_name => "Andy",
+              :contacts => [ContactForm.new(:name => "")]
+            )
+
+            result = form.valid?(:index_errors => true)
+            expect(result).to eq(false)
+            expect(form.errors).to have_attributes(
+              :messages => { :"contacts[0].name" => ["can't be blank"] },
+              :details => { :"contacts[0].name" => [{ :error => :blank }] }
+            )
+            expect(form.contacts.first).not_to be_valid
+            expect(form.contacts.first.errors).to have_attributes(
+              :messages => { :name => ["can't be blank"] },
+              :details => { :name => [{ :error => :blank }] }
+            )
+          end
         end
       end
 
@@ -535,6 +612,10 @@ RSpec.describe Rectify::Form do
           )
 
           expect(form).to be_valid(:exclude_arrays => true)
+          expect(form.errors).to have_attributes(
+            :messages => {},
+            :details => {}
+          )
         end
       end
     end

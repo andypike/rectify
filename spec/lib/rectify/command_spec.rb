@@ -56,7 +56,7 @@ RSpec.describe Rectify::Command do
       @private = true
     end
 
-    private :something_private
+    private :something_private # rubocop:disable Style/AccessModifierDeclarations
 
     it "calls public methods on the caller" do
       @success = false
