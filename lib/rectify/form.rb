@@ -1,7 +1,8 @@
 module Rectify
-  class Form
+  class Form # rubocop:disable Metrics/ClassLength
     include Virtus.model
     include ActiveModel::Validations
+    include NestedFormHelpers
 
     attr_reader :context
 
@@ -69,14 +70,14 @@ module Rectify
     def valid?(options = {})
       before_validation
 
-      options     = {} if options.blank?
-      context     = options[:context]
-      validations = [super(context)]
+      options = {} if options.blank?
+      context = options[:context]
 
-      validations << form_attributes_valid? unless options[:exclude_nested]
-      validations << array_attributes_valid? unless options[:exclude_arrays]
+      super(context)
+      validate_nested_attributes(options) unless options[:exclude_nested]
+      validate_nested_array_attributes(options) unless options[:exclude_arrays]
 
-      validations.all?
+      errors.empty?
     end
 
     def invalid?(options = {})
@@ -121,41 +122,60 @@ module Rectify
                    new_context
                  end
 
-      attributes_that_respond_to(:with_context)
-        .each { |f| f.with_context(context) }
-
-      array_attributes_that_respond_to(:with_context)
-        .each { |f| f.with_context(context) }
+      nested_values.each_value { |form| form.with_context(context) }
+      nested_array_values.each_value do |forms|
+        forms.each { |form| form.with_context(context) }
+      end
 
       self
     end
 
     private
 
-    def form_attributes_valid?
-      attributes_that_respond_to(:valid?)
-        .map(&:valid?)
-        .all?
+    def validate_nested_attributes(options)
+      nested_values.each do |attribute, form|
+        next if form.valid?(options)
+
+        merge_error_messages(attribute, form, options)
+      end
     end
 
-    def array_attributes_valid?
-      array_attributes_that_respond_to(:valid?)
-        .map(&:valid?)
-        .all?
+    def validate_nested_array_attributes(options)
+      nested_array_values.each do |attribute, forms|
+        forms.each_with_index do |form, index|
+          next if form.valid?(options)
+
+          merge_error_messages(attribute, form, options, index)
+        end
+      end
     end
 
-    def attributes_that_respond_to(message)
-      attributes
-        .each_value
-        .select { |f| f.respond_to?(message) }
-    end
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def merge_error_messages(attribute, form, options, index = nil)
+      indexed_attribute = !index.nil? && options[:index_errors]
+      form_errors = form.errors
 
-    def array_attributes_that_respond_to(message)
-      attributes
-        .each_value
-        .select { |a| a.is_a?(Array) }
-        .flatten
-        .select { |f| f.respond_to?(message) }
+      form_errors.details.each do |nested_attribute, details|
+        error_attribute =
+          normalize_error_attribute(indexed_attribute, attribute, index, nested_attribute).to_sym
+
+        form_errors[nested_attribute].each do |message|
+          errors[error_attribute].push(message).uniq!
+        end
+
+        details.each do |error|
+          errors.details[error_attribute].push(error).uniq!
+        end
+      end
+    end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+    def normalize_error_attribute(indexed_attribute, attribute, index, nested_attribute)
+      if indexed_attribute
+        "#{attribute}[#{index}].#{nested_attribute}"
+      else
+        "#{attribute}.#{nested_attribute}"
+      end
     end
   end
 end
