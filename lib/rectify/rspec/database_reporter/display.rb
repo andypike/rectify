@@ -35,9 +35,9 @@ module Rectify
           time_header    = "Time (s)".rjust(7)
 
           "#{target_header} | " \
-          "#{type_header} | " \
-          "#{queries_header} | " \
-          "#{time_header}"
+            "#{type_header} | " \
+            "#{queries_header} | " \
+            "#{time_header}"
         end
 
         def rows
@@ -53,7 +53,7 @@ module Rectify
 
         def summary
           puts ""
-          puts "Database Queries: #{query_stats.total_queries} "\
+          puts "Database Queries: #{query_stats.total_queries} " \
                "in #{query_stats.total_time}s"
         end
       end

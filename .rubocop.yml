@@ -1,9 +1,21 @@
 inherit_from: .rubocop_todo.yml
 
 AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.0
   Exclude:
     - 'bin/**/*'
     - 'spec/db/schema.rb'
+
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false
+
+Style/OpenStructUse:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
@@ -14,7 +26,7 @@ Style/HashSyntax:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 
 Layout/MultilineOperationIndentation:
@@ -24,7 +36,7 @@ Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
 Layout/IndentationWidth:
-  Width: 2  
+  Width: 2
 
 Metrics/ClassLength:
   Max: 115

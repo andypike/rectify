@@ -18,7 +18,7 @@ module Rectify
     def method_missing(method_name, *args, &block)
       if attributes.key?(method_name)
         attributes[method_name]
-      elsif method_name.to_s.ends_with?("=")
+      elsif method_name.to_s.end_with?("=")
         attribute_name = method_name.to_s.chomp("=").to_sym
         attributes[attribute_name] = args.first
       else

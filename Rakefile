@@ -45,14 +45,14 @@ namespace :g do
 
     migration_class = name.split("_").map(&:capitalize).join
 
-    File.open(path, "w") do |file|
-      file.write <<-MIGRATION.strip_heredoc
-        class #{migration_class} < ActiveRecord::Migration[5.2]
-          def change
-          end
+    content = <<~MIGRATION
+      class #{migration_class} < ActiveRecord::Migration[5.2]
+        def change
         end
-      MIGRATION
-    end
+      end
+    MIGRATION
+
+    File.write(path, content)
 
     puts "Migration #{path} created"
     abort # needed stop other tasks
