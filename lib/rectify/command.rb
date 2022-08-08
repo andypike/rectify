@@ -24,7 +24,7 @@ module Rectify
     def self.call(*args, &block)
       event_recorder = EventRecorder.new
 
-      command = new(*args)
+      command = new(**args)
       command.subscribe(event_recorder)
       command.evaluate(&block) if block_given?
       command.call
@@ -43,7 +43,7 @@ module Rectify
 
     def method_missing(method_name, *args, &block)
       if @caller.respond_to?(method_name, true)
-        @caller.send(method_name, *args, &block)
+        @caller.send(method_name, **args, &block)
       else
         super
       end
