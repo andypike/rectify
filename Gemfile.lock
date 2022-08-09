@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rectify (0.13.0)
+    rectify (0.14.0)
       activemodel (>= 7.0.3)
       activerecord (>= 7.0.3)
       activesupport (>= 7.0.3)

@@ -23,3 +23,7 @@ rspec:
 
 rubocop:
 	docker-compose run --rm web bundle exec rubocop
+
+release:
+	docker-compose run --rm web bundle install
+	docker-compose run --rm web gem build rectify.gemspec
