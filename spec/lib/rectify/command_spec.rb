@@ -42,14 +42,15 @@ RSpec.describe Rectify::Command do
       end
 
       it "supports named arguments" do
-        expect(NamedArgsCommand).to receive(:new).with(
-          "andy",
+        NamedArgsCommand.call(
+          "Andy",
+          "Pike",
           :height => 185,
-          :location => "UK"
-        ) { instance }
-        expect(instance).to receive(:call)
-
-        NamedArgsCommand.call("andy", :height => 185, :location => "UK")
+          :location => "UK",
+          :hobby => "Running"
+        ) do
+          on(:ok) { |message| expect(message).to eq("Hello Andy") }
+        end
       end
     end
   end

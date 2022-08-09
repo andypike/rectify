@@ -21,10 +21,10 @@ module Rectify
   class Command
     include Wisper::Publisher
 
-    def self.call(*args, &block)
+    def self.call(*args, **kwargs, &block)
       event_recorder = EventRecorder.new
 
-      command = new(*args)
+      command = new(*args, **kwargs)
       command.subscribe(event_recorder)
       command.evaluate(&block) if block_given?
       command.call
