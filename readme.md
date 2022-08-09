@@ -1051,7 +1051,7 @@ class UsersOverUsingSql < Rectify::Query
   end
 
   def sql
-    <<-SQL.strip_heredoc
+    <<~SQL
       SELECT *
       FROM users
       WHERE age > :age

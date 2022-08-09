@@ -9,7 +9,7 @@ require "action_controller"
 Dir["spec/support/**/*.rb"].each  { |f| require File.expand_path(f) }
 Dir["spec/fixtures/**/*.rb"].each { |f| require File.expand_path(f) }
 
-system("rake db:migrate")
+system("bundle exec rake db:migrate")
 
 db_config = YAML.safe_load(File.open("spec/config/database.yml"))
 ActiveRecord::Base.establish_connection(db_config)
@@ -38,4 +38,4 @@ RSpec.configure do |config|
   config.include Rectify::RSpec::Helpers
 end
 
-Rectify::RSpec::DatabaseReporter.enable
+# Rectify::RSpec::DatabaseReporter.enable

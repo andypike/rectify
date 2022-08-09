@@ -1,0 +1,24 @@
+version: '3.7'
+
+volumes:
+  store:
+  gem_cache:
+
+x-base: &base
+  image: rectify_web
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - .:/app
+    - gem_cache:/gems
+
+services:
+  web:
+    <<: *base
+    stdin_open: true
+    tty: true
+    command: ./bin/rspec
+    environment:
+      - EDITOR=vim
+      - WEBPACKER_DEV_SERVER_HOST=webpack

@@ -8,7 +8,7 @@ RSpec.describe Rectify::Form do
       )
 
       expect(form).to have_attributes(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
         :age => 38
       )
@@ -18,7 +18,7 @@ RSpec.describe Rectify::Form do
       form = UserForm.new(:user => "andy38", :first_name => "Andy", :age => 38)
 
       expect(form).to have_attributes(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
         :age => 38
       )
@@ -28,18 +28,18 @@ RSpec.describe Rectify::Form do
   describe ".from_params" do
     let(:params) do
       ActionController::Parameters.new(
-        "id"       => "1",
+        "id" => "1",
         "other_id" => "2",
         "user" => {
-          "user"       => "andy38",
+          "user" => "andy38",
           "first_name" => "Andy",
-          "age"        => "38",
-          "colours"    => %w[red blue green],
-          "file"       => ActionDispatch::Http::UploadedFile.new(:tempfile => Tempfile.new("file")),
+          "age" => "38",
+          "colours" => %w[red blue green],
+          "file" => ActionDispatch::Http::UploadedFile.new(:tempfile => Tempfile.new("file")),
           "address" => {
-            "street"    => "1 High Street",
-            "town"      => "Wimbledon",
-            "city"      => "London",
+            "street" => "1 High Street",
+            "town" => "Wimbledon",
+            "city" => "London",
             "post_code" => "SW19 1AB"
           },
           "contacts" => [
@@ -55,10 +55,10 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect(form).to have_attributes(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
-        :age        => 38,
-        :colours    => %w[red blue green]
+        :age => 38,
+        :colours => %w[red blue green]
       )
     end
 
@@ -78,9 +78,9 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_params(params)
 
       expect(form.address).to have_attributes(
-        :street    => "1 High Street",
-        :town      => "Wimbledon",
-        :city      => "London",
+        :street => "1 High Street",
+        :town => "Wimbledon",
+        :city => "London",
         :post_code => "SW19 1AB"
       )
     end
@@ -169,10 +169,10 @@ RSpec.describe Rectify::Form do
       form = ChildForm.from_params(params)
 
       expect(form).to have_attributes(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
-        :age        => 38,
-        :school     => "Rutlish"
+        :age => 38,
+        :school => "Rutlish"
       )
     end
 
@@ -200,16 +200,16 @@ RSpec.describe Rectify::Form do
   describe ".from_model" do
     let(:model) do
       User.new(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
-        :age        => 38,
-        :contacts   => [
+        :age => 38,
+        :contacts => [
           Contact.new(:name => "James", :number => "12345")
         ],
         :address => Address.new(
-          :street    => "1 High Street",
-          :town      => "Wimbledon",
-          :city      => "London",
+          :street => "1 High Street",
+          :town => "Wimbledon",
+          :city => "London",
           :post_code => "SW19 1AB"
         ),
         :last_logged_in => Time.new(2016, 1, 30, 9, 30, 0)
@@ -220,7 +220,7 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_model(model)
 
       expect(form).to have_attributes(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
         :age => 38
       )
@@ -231,7 +231,7 @@ RSpec.describe Rectify::Form do
 
       expect(form.contacts).to have(1).item
       expect(form.contacts.first).to have_attributes(
-        :name   => "James",
+        :name => "James",
         :number => "12345"
       )
     end
@@ -240,9 +240,9 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_model(model)
 
       expect(form.address).to have_attributes(
-        :street    => "1 High Street",
-        :town      => "Wimbledon",
-        :city      => "London",
+        :street => "1 High Street",
+        :town => "Wimbledon",
+        :city => "London",
         :post_code => "SW19 1AB"
       )
     end
@@ -273,7 +273,7 @@ RSpec.describe Rectify::Form do
       form = UserForm.from_json(json)
 
       expect(form).to have_attributes(
-        :user       => "andy38",
+        :user => "andy38",
         :first_name => "Andy",
         :age => 38
       )
@@ -357,14 +357,14 @@ RSpec.describe Rectify::Form do
   describe "#attributes_with_values" do
     it "returns a hash of attributes where their values are non-nil" do
       form = AddressForm.new(
-        :id        => 1,
-        :street    => "1 High Street",
-        :town      => nil,
+        :id => 1,
+        :street => "1 High Street",
+        :town => nil,
         :post_code => "GU1 2AB"
       )
 
       expect(form.attributes_with_values).to eq(
-        :street    => "1 High Street",
+        :street => "1 High Street",
         :post_code => "GU1 2AB"
       )
     end
@@ -483,7 +483,7 @@ RSpec.describe Rectify::Form do
         it "returns true" do
           form = UserForm.new(
             :first_name => "Andy",
-            :contacts   => [ContactForm.new(:name => "Andy")]
+            :contacts => [ContactForm.new(:name => "Andy")]
           )
 
           expect(form).to be_valid
@@ -549,7 +549,7 @@ RSpec.describe Rectify::Form do
     it "assigns a context to array attribute child forms" do
       form = UserForm.new(
         :first_name => "Andy",
-        :contacts   => [ContactForm.new(:name => "Andy")]
+        :contacts => [ContactForm.new(:name => "Andy")]
       ).with_context(:account_id => 1)
 
       expect(form.contacts.first.context.account_id).to eq(1)

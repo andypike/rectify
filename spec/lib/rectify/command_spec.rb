@@ -26,9 +26,9 @@ RSpec.describe Rectify::Command do
         events = ReturnMultiEventMultiResultCommand.call
 
         expect(events).to eq(
-          :ok        => [1, 2, 3],
+          :ok => [1, 2, 3],
           :published => "The command works",
-          :next      => []
+          :next => []
         )
       end
     end
@@ -39,6 +39,18 @@ RSpec.describe Rectify::Command do
         expect(instance).to receive(:call)
 
         ArgsCommand.call(:a, :b, :c)
+      end
+
+      it "supports named arguments" do
+        NamedArgsCommand.call(
+          "Andy",
+          "Pike",
+          :height => 185,
+          :location => "UK",
+          :hobby => "Running"
+        ) do
+          on(:ok) { |message| expect(message).to eq("Hello Andy") }
+        end
       end
     end
   end

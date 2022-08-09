@@ -5,7 +5,7 @@ module Rectify
     end
 
     def present(presenter, options = {})
-      presenter_type = options.fetch(:for) { :template }
+      presenter_type = options.fetch(:for, :template)
 
       presenter.attach_controller(self)
       rectify_presenters[presenter_type] = presenter

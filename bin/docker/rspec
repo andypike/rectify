@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo start specs tests
+
+docker-compose run --rm web bash -c "bundle exec rspec $*"

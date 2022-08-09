@@ -8,24 +8,18 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Lint/UnneededCopDisableDirective:
+Lint/RedundantCopDisableDirective:
   Exclude:
     - 'lib/rectify/command.rb'
 
 # Offense count: 6
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id, to, by, on, in, at
-Naming/UncommunicativeMethodParamName:
+Lint/MissingSuper:
   Exclude:
     - 'lib/rectify/format_attributes_hash.rb'
     - 'lib/rectify/rspec/database_reporter/reporter.rb'
     - 'spec/fixtures/command/args_command.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Performance/RegexpMatch:
-  Exclude:
-    - 'lib/rectify/rspec/matchers.rb'
 
 # Offense count: 3
 # Cop supports --auto-correct.
@@ -48,11 +42,6 @@ Style/IfUnlessModifier:
     - 'lib/rectify/rspec/matchers.rb'
 
 # Offense count: 1
-Style/MethodMissingSuper:
-  Exclude:
-    - 'lib/rectify/command.rb'
-
-# Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.
 # SupportedStyles: predicate, comparison
@@ -64,5 +53,5 @@ Style/NumericPredicate:
 # Offense count: 1
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
