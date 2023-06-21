@@ -41,9 +41,9 @@ module Rectify
       ActiveRecord::Base.transaction(&block) if block_given?
     end
 
-    def method_missing(method_name, *args, &block)
+    def method_missing(method_name, *args, **kwargs, &block)
       if @caller.respond_to?(method_name, true)
-        @caller.send(method_name, *args, &block)
+        @caller.send(method_name, *args, **kwargs, &block)
       else
         super
       end
